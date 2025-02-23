@@ -48,7 +48,11 @@
 			"@repository/*": ["src/repository/*"],
 			"@controller/*": ["src/controller/*"],
 			"@presenter/*": ["src/presenter/*"]
-		}
+		},
+
+		/* Dependency Injection */
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
 	},
 	"exclude": ["test"],
 	"include": ["worker-configuration.d.ts", "src/**/*.ts"]

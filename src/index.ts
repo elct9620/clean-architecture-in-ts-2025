@@ -1,6 +1,7 @@
+import "reflect-metadata";
+
 import { tsyringe } from "@hono/tsyringe";
 import { Hono } from "hono";
-import "reflect-metadata";
 
 import ChatController from "@controller/ChatController";
 
