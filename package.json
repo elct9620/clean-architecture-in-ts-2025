@@ -27,7 +27,9 @@
 		"wrangler": "^3.109.2"
 	},
 	"dependencies": {
+		"@ai-sdk/openai": "^1.1.13",
 		"@hono/zod-validator": "^0.4.3",
+		"ai": "^4.1.45",
 		"hono": "^4.7.2",
 		"reflect-metadata": "^0.2.2",
 		"tsyringe-neo": "^5.1.0",
