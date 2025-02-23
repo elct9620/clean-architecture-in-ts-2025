@@ -10,20 +10,33 @@ import worker from "../src/index";
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 describe("Chat Controller", () => {
-	it("responds with Hello World! on POST request", async () => {
+	const payload = {
+		sessionId: "test-session",
+		content: "Hello",
+	};
+
+	it("responds with success on POST request", async () => {
 		const request = new IncomingRequest("http://example.com/api/chat", {
 			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
 		});
 		const ctx = createExecutionContext();
 		const response = await worker.fetch(request, env, ctx);
 		await waitOnExecutionContext(ctx);
-		expect(await response.text()).toBe("Hello World!");
+		expect(await response.json()).toEqual({ success: true });
 	});
 
-	it("responds with Hello World! (integration style)", async () => {
+	it("responds with success (integration style)", async () => {
 		const response = await SELF.fetch("https://example.com/api/chat", {
 			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
 		});
-		expect(await response.text()).toBe("Hello World!");
+		expect(await response.json()).toEqual({ success: true });
 	});
 });
