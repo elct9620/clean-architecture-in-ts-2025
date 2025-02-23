@@ -2,4 +2,7 @@
 
 interface Env {
 	KV: KVNamespace;
+	OPENAI_BASE_URL: string;
+	OPENAI_API_KEY: string;
+	MODEL_ID: string;
 }

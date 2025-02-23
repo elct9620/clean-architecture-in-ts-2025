@@ -22,6 +22,7 @@ The project is structured as follows:
   - **controller**: The adapter to convert http request to usecase input.
   - **presenter**: The adapter to convert usecase output to http response.
   - **repository**: The adapter to convert database query to entity.
+  - **agent**: The adapter to interact with Language Model.
 - **tsconfig.json**: The TypeScript configuration file.
 
 ## TypeScript
@@ -30,9 +31,9 @@ The project is structured as follows:
 
 ## Dependency Injection
 
-The application uses the `tsyringe` library for dependency injection, which is configured in the `src/container.ts` file.
+The application uses the `tsyringe-neo` library for dependency injection, which is configured in the `src/container.ts` file.
 
-- **Container**: Use `tsyringe` as the dependency injection container.
+- **Container**: Use `tsyringe-neo` as the dependency injection container.
 - **Injectable**: Use `@injectable` to mark a class as injectable, only adapters is injectable. e.g. `controller`, `presenter`, `repository`.
 - **Inject**: Use `@inject` to inject a dependency into a class, e.g. `@inject('ProductRepository')`. Prefer inject as private property.
 - **Singleton**: Avoid using `@singleton` to mark a class as singleton, if needed ask the team for approval.

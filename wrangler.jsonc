@@ -34,6 +34,11 @@
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
 	// "vars": { "MY_VARIABLE": "production_value" },
+	"vars": {
+		"OPENAI_BASE_URL": "",
+		"OPENAI_API_KEY": "",
+		"MODEL_ID": "gpt-4o-mini",
+	},
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/

@@ -47,7 +47,8 @@
 			"@usecase/*": ["src/usecase/*"],
 			"@repository/*": ["src/repository/*"],
 			"@controller/*": ["src/controller/*"],
-			"@presenter/*": ["src/presenter/*"]
+			"@presenter/*": ["src/presenter/*"],
+			"@agent/*": ["src/agent/*"]
 		},
 
 		/* Dependency Injection */
