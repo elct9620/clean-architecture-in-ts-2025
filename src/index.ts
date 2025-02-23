@@ -1,14 +1,19 @@
 import "reflect-metadata";
 
-import { tsyringe } from "@hono/tsyringe";
 import { Hono } from "hono";
+import { container } from "tsyringe-neo";
 
 import ChatController from "@controller/ChatController";
+import { KvStore } from "./container";
 
-const app = new Hono<{ Variables: Env }>();
+const app = new Hono<{ Bindings: Env }>();
 
 app.use(async (c, next) => {
-	await tsyringe((container) => {})(c, next);
+	container.register(KvStore, {
+		useValue: c.env.KV,
+	});
+
+	return next();
 });
 
 app.get("/", (c) => c.text("Hello World!"));

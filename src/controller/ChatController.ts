@@ -1,9 +1,12 @@
-import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
 
-const app = new Hono<{ Variables: Env }>();
+import { KvConversationRepository } from "@/repository/KvConversationRepository";
+import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
+import { container } from "tsyringe-neo";
+
+const app = new Hono<{ Bindings: Env }>();
 
 const schema = z.object({
 	sessionId: z.string(),
@@ -12,7 +15,8 @@ const schema = z.object({
 
 const routes = app.post("/", zValidator("json", schema), async (c) => {
 	const { sessionId, content } = c.req.valid("json");
-	const chatWithAssistant = new ChatWithAssistant();
+	const repository = container.resolve(KvConversationRepository);
+	const chatWithAssistant = new ChatWithAssistant(repository);
 	await chatWithAssistant.execute(sessionId, content);
 	return c.json({ success: true });
 });

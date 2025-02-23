@@ -21,17 +21,16 @@
 		"husky": "^9.1.7",
 		"prettier": "3.5.2",
 		"prettier-plugin-organize-imports": "^4.1.0",
-		"tsyringe": "^4.8.0",
 		"typescript": "^5.5.2",
 		"vite-tsconfig-paths": "^5.1.4",
 		"vitest": "~2.1.9",
 		"wrangler": "^3.109.2"
 	},
 	"dependencies": {
-		"@hono/tsyringe": "^1.0.1",
 		"@hono/zod-validator": "^0.4.3",
 		"hono": "^4.7.2",
 		"reflect-metadata": "^0.2.2",
+		"tsyringe-neo": "^5.1.0",
 		"zod": "^3.24.2"
 	}
 }

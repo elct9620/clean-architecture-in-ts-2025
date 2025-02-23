@@ -1,6 +1,8 @@
 import { SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 
+import "../src/index";
+
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 describe("Chat Controller", () => {

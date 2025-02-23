@@ -16,7 +16,7 @@ export class Conversation {
 	constructor(public readonly id: SessionId) {}
 
 	get messages(): Message[] {
-		return [...this.messages];
+		return [...this._messages];
 	}
 
 	addMessage(role: Role, content: string) {
