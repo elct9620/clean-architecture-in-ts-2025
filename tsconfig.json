@@ -37,7 +37,18 @@
 		"strict": true,
 
 		/* Skip type checking all .d.ts files. */
-		"skipLibCheck": true
+		"skipLibCheck": true,
+
+		/* Paths */
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@entity/*": ["src/entity/*"],
+			"@usecase/*": ["src/usecase/*"],
+			"@repository/*": ["src/repository/*"],
+			"@controller/*": ["src/controller/*"],
+			"@presenter/*": ["src/presenter/*"]
+		}
 	},
 	"exclude": ["test"],
 	"include": ["worker-configuration.d.ts", "src/**/*.ts"]
