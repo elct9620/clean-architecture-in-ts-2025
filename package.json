@@ -14,7 +14,7 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.6.16",
+		"@cloudflare/vitest-pool-workers": "^0.7.1",
 		"@cloudflare/workers-types": "^4.20250214.0",
 		"@commitlint/cli": "^19.7.1",
 		"@commitlint/config-conventional": "^19.7.1",
