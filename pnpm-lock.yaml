@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       '@cloudflare/vitest-pool-workers':
-        specifier: ^0.6.4
+        specifier: ^0.6.16
         version: 0.6.16(@cloudflare/workers-types@4.20250214.0)(@vitest/runner@2.1.9)(@vitest/snapshot@2.1.9)(vitest@2.1.9(@types/node@22.13.5))
       '@cloudflare/workers-types':
         specifier: ^4.20250214.0
