@@ -37,3 +37,22 @@ The application uses the `tsyringe` library for dependency injection, which is c
 - **Inject**: Use `@inject` to inject a dependency into a class, e.g. `@inject('ProductRepository')`. Prefer inject as private property.
 - **Singleton**: Avoid using `@singleton` to mark a class as singleton, if needed ask the team for approval.
 - **Register**: Use `container.register` to register a dependency in `src/container.ts`.
+
+## Hono Controller
+
+The controller in the `src/controller` isn't a class, it should be a Hono routes.
+
+This is example of a controller:
+
+```typescript
+import { Hono } from "hono";
+
+const app = new Hono<{ Variables: Env }>();
+
+// Chain the routes that can be use `route("/api/chat", ChatController)` in the `src/index.ts`
+const routes = app.post("/", async (c) => {
+	return c.text("Hello World!");
+});
+
+export default routes;
+```
