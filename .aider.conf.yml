@@ -1,3 +1,4 @@
 read: CONVENTIONS.md
 lint-cmd: pnpm lint
 test-cmd: pnpm test
+watch-files: true
