@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 
+import { LlmChatAgent } from "@/agent/LlmChatAgent";
 import { HonoServerEventPresenter } from "@/presenter/StreamingEventPresenter";
 import { KvConversationRepository } from "@/repository/KvConversationRepository";
 import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
@@ -20,7 +21,12 @@ const routes = app.post("/", zValidator("json", schema), async (c) => {
 		const { sessionId, content } = c.req.valid("json");
 		const repository = container.resolve(KvConversationRepository);
 		const presenter = new HonoServerEventPresenter(stream);
-		const chatWithAssistant = new ChatWithAssistant(repository, presenter);
+		const agent = container.resolve(LlmChatAgent);
+		const chatWithAssistant = new ChatWithAssistant(
+			repository,
+			presenter,
+			agent,
+		);
 		await chatWithAssistant.execute(sessionId, content);
 	});
 });
