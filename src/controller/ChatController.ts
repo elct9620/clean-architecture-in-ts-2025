@@ -1,7 +1,9 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 
+import { HonoServerEventPresenter } from "@/presenter/StreamingEventPresenter";
 import { KvConversationRepository } from "@/repository/KvConversationRepository";
 import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
 import { container } from "tsyringe-neo";
@@ -14,11 +16,13 @@ const schema = z.object({
 });
 
 const routes = app.post("/", zValidator("json", schema), async (c) => {
-	const { sessionId, content } = c.req.valid("json");
-	const repository = container.resolve(KvConversationRepository);
-	const chatWithAssistant = new ChatWithAssistant(repository);
-	await chatWithAssistant.execute(sessionId, content);
-	return c.json({ success: true });
+	return streamSSE(c, async (stream) => {
+		const { sessionId, content } = c.req.valid("json");
+		const repository = container.resolve(KvConversationRepository);
+		const presenter = new HonoServerEventPresenter(stream);
+		const chatWithAssistant = new ChatWithAssistant(repository, presenter);
+		await chatWithAssistant.execute(sessionId, content);
+	});
 });
 
 export default routes;

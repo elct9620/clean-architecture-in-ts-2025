@@ -7,6 +7,8 @@ export default defineWorkersConfig({
 		setupFiles: ["vitest.setup.ts"],
 		poolOptions: {
 			workers: {
+				singleWorker: true,
+				isolatedStorage: false,
 				wrangler: { configPath: "./wrangler.jsonc" },
 			},
 		},
