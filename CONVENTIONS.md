@@ -39,7 +39,7 @@ The application uses the `tsyringe-neo` library for dependency injection, which 
 - **Singleton**: Avoid using `@singleton` to mark a class as singleton, if needed ask the team for approval.
 - **Register**: Use `container.register` to register a dependency in `src/container.ts`.
 
-## Hono Controller
+## Controller
 
 The controller in the `src/controller` isn't a class, it should be a Hono routes.
 
@@ -56,4 +56,44 @@ const routes = app.post("/", async (c) => {
 });
 
 export default routes;
+```
+
+## Language Model
+
+### Mocking in Tests
+
+We use `vitest` to mock the Language Model in tests which is `jest` based.
+
+```typescript
+import { container } from "tsyringe-neo";
+
+// Get Language Model Provider
+import { openai } from "@ai-sdk/openai";
+
+// Get `vitest` to use `vi.spyOn()` to mock the Language Model
+import { afterEach, beforeEach, vi } from "vitest";
+
+// Ensure the mock is restored after each test
+afterEach(() => {
+	vi.restoreAllMocks();
+});
+
+// Mock the Language Model
+beforeEach(() => {
+	// Prepare the model to be mocked
+	const model = openai("gpt-4o-mini");
+
+	// Mock the `doGenerate` method to return a specific output
+	vi.spyOn(model, "doGenerate").mockImplementation(async () => ({
+		rawCall: { rawPrompt: null, rawSettings: {} },
+		finishReason: "stop",
+		usage: { promptTokens: 10, completionTokens: 20 },
+		text: "Hello World",
+	}));
+
+	// Register the model in the container to be used in the tests
+	container.register(LlmModel, {
+		useValue: model,
+	});
+});
 ```

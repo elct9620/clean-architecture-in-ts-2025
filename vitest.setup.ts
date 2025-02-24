@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-	const model = openai("mock-id");
+	const model = openai("gpt-4o-mini");
 
 	vi.spyOn(model, "doGenerate").mockImplementation(async () => ({
 		rawCall: { rawPrompt: null, rawSettings: {} },
