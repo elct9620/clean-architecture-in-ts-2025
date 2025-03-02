@@ -15,6 +15,8 @@ describe("Hello World worker", () => {
 		expect(html).toContain('<div id="root"></div>');
 
 		// Verify script is loaded with correct path
-		expect(html).toContain('<script type="module" src="/src/client.tsx"></script>');
+		expect(html).toContain(
+			'<script type="module" src="/src/client.tsx"></script>',
+		);
 	});
 });
