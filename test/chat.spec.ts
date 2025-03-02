@@ -3,6 +3,7 @@ import { SELF } from "cloudflare:test";
 import { container } from "tsyringe-neo";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { simulateReadableStream } from "ai";
 import { LlmModel } from "../src/container";
 import "../src/index";
 
@@ -17,11 +18,19 @@ describe("Chat Controller", () => {
 	beforeEach(() => {
 		const model = openai("gpt-4o-mini");
 
-		vi.spyOn(model, "doGenerate").mockImplementation(async () => ({
+		vi.spyOn(model, "doStream").mockImplementation(async () => ({
 			rawCall: { rawPrompt: null, rawSettings: {} },
-			finishReason: "stop",
-			usage: { promptTokens: 10, completionTokens: 20 },
-			text: "Hello World",
+			stream: simulateReadableStream({
+				chunks: [
+					{ type: "text-delta", textDelta: "Hello" },
+					{ type: "text-delta", textDelta: " World" },
+					{
+						type: "finish",
+						finishReason: "stop",
+						usage: { completionTokens: 0, promptTokens: 0 },
+					},
+				],
+			}),
 		}));
 
 		container.register(LlmModel, {
@@ -56,6 +65,7 @@ describe("Chat Controller", () => {
 		const text = decoder.decode(value);
 
 		expect(text).toContain("event: message");
-		expect(text).toContain('data: {"content":"Hello World"}');
+		expect(text).toContain('data: {"content":"Hello"}');
+		expect(text).toContain('data: {"content":" World"}');
 	});
 });
