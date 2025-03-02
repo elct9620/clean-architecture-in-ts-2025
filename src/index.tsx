@@ -27,7 +27,19 @@ app.use(async (c, next) => {
 	return next();
 });
 
-app.get("/", (c) => c.text("Hello World!"));
+app.get("/", (c) => c.html(
+	<html lang="zh-TW">
+		<head>
+			<title>Clean Architecture in TypeScript</title>
+			<meta charSet="utf-8" />
+			<meta content="width=device-width, initial-scale=1" name="viewport" />
+			{import.meta.env.PROD ? <script type="module" src="/app.js" /> : <script type="module" src="/src/client.tsx" />}
+		</head>
+		<body>
+			<div id="root" />
+		</body>
+	</html>,
+));
 app.route("/api/chat", ChatController);
 
 export default {
