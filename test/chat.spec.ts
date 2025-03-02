@@ -61,11 +61,15 @@ describe("Chat Controller", () => {
 			throw new Error("No reader available");
 		}
 
-		const { value } = await reader.read();
-		const text = decoder.decode(value);
+		let chunks = "";
+		while (true) {
+			const { value, done } = await reader.read();
+			if (done) break;
+			chunks += decoder.decode(value);
+		}
 
-		expect(text).toContain("event: message");
-		expect(text).toContain('data: {"content":"Hello"}');
-		expect(text).toContain('data: {"content":" World"}');
+		expect(chunks).toContain("event: message");
+		expect(chunks).toContain('data: {"content":"Hello"}');
+		expect(chunks).toContain('data: {"content":" World"}');
 	});
 });
