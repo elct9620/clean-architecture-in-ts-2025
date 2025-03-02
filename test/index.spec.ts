@@ -22,6 +22,8 @@ describe("Hello World worker", () => {
 		const scripts = document.getElementsByTagName("script");
 		expect(scripts.length).toBe(1);
 		expect(scripts[0].type).toBe("module");
-		expect(scripts[0].src).toMatch(import.meta.env.PROD ? "/app.js" : "/src/client.tsx");
+		expect(scripts[0].src).toMatch(
+			import.meta.env.PROD ? "/app.js" : "/src/client.tsx",
+		);
 	});
 });
