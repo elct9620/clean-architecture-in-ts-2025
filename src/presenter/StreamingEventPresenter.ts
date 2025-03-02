@@ -7,7 +7,7 @@ export class HonoServerEventPresenter implements StreamingEventPresenter {
 	async messagePartial(chunk: string): Promise<void> {
 		await this.stream.writeSSE({
 			event: "message",
-			data: chunk,
+			data: JSON.stringify({ content: chunk }),
 		});
 	}
 }
