@@ -1,4 +1,4 @@
-import { type LanguageModel, generateText } from "ai";
+import { type LanguageModel, streamText } from "ai";
 import { inject, injectable } from "tsyringe-neo";
 
 import { LlmModel } from "@/container";
@@ -9,8 +9,8 @@ import { ChatAgent } from "@/usecase/interface";
 export class LlmChatAgent implements ChatAgent {
 	constructor(@inject(LlmModel) private readonly model: LanguageModel) {}
 
-	async chat(messages: Message[]): Promise<string> {
-		const { text } = await generateText({
+	async *chat(messages: Message[]): AsyncIterable<string> {
+		const { textStream } = await streamText({
 			model: this.model,
 			messages: messages.map((message) => ({
 				role: message.role,
@@ -18,6 +18,8 @@ export class LlmChatAgent implements ChatAgent {
 			})),
 		});
 
-		return text;
+		for await (const chunk of textStream) {
+			yield chunk;
+		}
 	}
 }

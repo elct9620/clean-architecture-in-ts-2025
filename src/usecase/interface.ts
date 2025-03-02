@@ -11,5 +11,5 @@ export interface StreamingEventPresenter {
 }
 
 export interface ChatAgent {
-	chat(messages: Message[]): Promise<string>;
+	chat(messages: Message[]): AsyncIterable<string>;
 }
