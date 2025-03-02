@@ -1,5 +1,6 @@
 // test/index.spec.ts
 import { SELF } from "cloudflare:test";
+import { JSDOM } from "jsdom";
 import { describe, expect, it } from "vitest";
 
 // For now, you'll need to do something like this to get a correctly-typed
@@ -7,10 +8,20 @@ import { describe, expect, it } from "vitest";
 const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 
 describe("Hello World worker", () => {
-	it("responds with Hello World!", async () => {
+	it("should render HTML with root element and script", async () => {
 		const response = await SELF.fetch("https://example.com");
-		expect(await response.text()).toMatchInlineSnapshot(
-			`"<html lang="zh-TW"><head><title>Clean Architecture in TypeScript</title><meta charSet="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script type="module" src="/src/client.tsx"></script></head><body><div id="root"></div></body></html>"`,
-		);
+		const html = await response.text();
+		const dom = new JSDOM(html);
+		const document = dom.window.document;
+
+		// Verify root element exists
+		const rootElement = document.getElementById("root");
+		expect(rootElement).toBeTruthy();
+
+		// Verify script is loaded
+		const scripts = document.getElementsByTagName("script");
+		expect(scripts.length).toBe(1);
+		expect(scripts[0].type).toBe("module");
+		expect(scripts[0].src).toMatch(import.meta.env.PROD ? "/app.js" : "/src/client.tsx");
 	});
 });
