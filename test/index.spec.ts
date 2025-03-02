@@ -9,6 +9,6 @@ const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
 describe("Hello World worker", () => {
 	it("responds with Hello World!", async () => {
 		const response = await SELF.fetch("https://example.com");
-		expect(await response.text()).toMatchInlineSnapshot(`"Hello World!"`);
+		expect(await response.text()).toMatchInlineSnapshot(`"<html lang="zh-TW"><head><title>Clean Architecture in TypeScript</title><meta charSet="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><script type="module" src="/src/client.tsx"></script></head><body><div id="root"></div></body></html>"`);
 	});
 });
