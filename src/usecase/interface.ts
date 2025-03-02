@@ -7,7 +7,7 @@ export interface ConversationRepository {
 }
 
 export interface StreamingEventPresenter {
-	emit(event: string, data: any): Promise<void>;
+	messagePartial(chunk: string): Promise<void>;
 }
 
 export interface ChatAgent {
