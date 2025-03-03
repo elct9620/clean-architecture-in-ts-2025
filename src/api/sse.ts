@@ -16,90 +16,35 @@ const enum ControlChars {
 
 type onMessage = (event: ServerEvent) => void;
 
-export async function* readEvents(stream: ReadableStream): AsyncGenerator<ServerEvent> {
-	const reader = stream.getReader();
-	let buffer: Uint8Array | undefined;
-	let position = 0;
-	let fieldLength = -1;
-	let event = newEvent();
-	const decoder = new TextDecoder();
+export async function* readEvents(
+	stream: ReadableStream,
+): AsyncGenerator<ServerEvent> {
+	const bytesGenerator = getBytes(stream);
+	const linesGenerator = getLines(bytesGenerator);
+	const eventsGenerator = getEvents(linesGenerator);
 
-	try {
-		while (true) {
-			const { done, value } = await reader.read();
-			if (done) break;
-
-			if (buffer === undefined) {
-				buffer = value;
-			} else {
-				buffer = concat(buffer, value);
-			}
-
-			while (position < buffer.length) {
-				const lineEnd = buffer.indexOf(ControlChars.NewLine, position);
-				if (lineEnd === -1) break;
-
-				const line = buffer.subarray(position, lineEnd);
-				position = lineEnd + 1;
-
-				if (line.length === 0) {
-					if (event.data || event.event) {
-						yield event;
-						event = newEvent();
-					}
-					continue;
-				}
-
-				const colonIndex = line.indexOf(ControlChars.Colon);
-				if (colonIndex === -1) continue;
-
-				const field = decoder.decode(line.subarray(0, colonIndex));
-				const valueStart = colonIndex + (line[colonIndex + 1] === ControlChars.Space ? 2 : 1);
-				const value = decoder.decode(line.subarray(valueStart));
-
-				switch (field) {
-					case 'id':
-						event.id = value;
-						break;
-					case 'event':
-						event.event = value;
-						break;
-					case 'data':
-						event.data += event.data ? '\n' + value : value;
-						break;
-					case 'retry':
-						const retry = parseInt(value, 10);
-						if (!isNaN(retry)) {
-							event.retry = retry;
-						}
-						break;
-				}
-			}
-
-			if (position === buffer.length) {
-				buffer = undefined;
-				position = 0;
-			} else if (position > 0) {
-				buffer = buffer.subarray(position);
-				position = 0;
-			}
-		}
-
-		if (event.data || event.event) {
-			yield event;
-		}
-	} finally {
-		reader.releaseLock();
+	for await (const event of eventsGenerator) {
+		yield event;
 	}
 }
 
-function getLines(onLine: (line: Uint8Array, fieldLength: number) => void) {
+async function* getBytes(stream: ReadableStream): AsyncGenerator<Uint8Array> {
+	const reader = stream.getReader();
+	let buffer: ReadableStreamReadResult<Uint8Array>;
+	while (!(buffer = await reader.read()).done) {
+		yield buffer.value;
+	}
+}
+
+async function* getLines(
+	bytes: AsyncGenerator<Uint8Array>,
+): AsyncGenerator<[Uint8Array, number]> {
 	let buffer: Uint8Array | undefined;
-	let position: number;
-	let fieldLength: number;
+	let position: number = 0;
+	let fieldLength: number = -1;
 	let discardTrailingNewline = false;
 
-	return function onChunk(array: Uint8Array) {
+	for await (const array of bytes) {
 		if (buffer == undefined) {
 			buffer = array;
 			position = 0;
@@ -142,7 +87,7 @@ function getLines(onLine: (line: Uint8Array, fieldLength: number) => void) {
 				break;
 			}
 
-			onLine(buffer.subarray(lineStart, lineEnd), fieldLength);
+			yield [buffer.subarray(lineStart, lineEnd), fieldLength];
 			lineStart = position;
 			fieldLength = -1;
 		}
@@ -156,37 +101,38 @@ function getLines(onLine: (line: Uint8Array, fieldLength: number) => void) {
 			buffer = buffer.subarray(lineStart);
 			position -= lineStart;
 		}
-	};
+	}
 }
 
-function getEvents(onMessage?: onMessage) {
+async function* getEvents(lines: AsyncGenerator<[Uint8Array, number]>) {
 	let event = newEvent();
 	const decoder = new TextDecoder();
 
-	return function onLine(line: Uint8Array, fieldLength: number) {
+	for await (const [line, fieldLength] of lines) {
 		const isEndOfEvent = line.length === 0;
 		if (isEndOfEvent) {
-			onMessage?.(event);
+			yield event;
 			event = newEvent();
 		}
 
 		const isReadable = fieldLength > 0;
 		if (isReadable) {
 			const field = decoder.decode(line.subarray(0, fieldLength));
-			const valueOffset = fieldLength + (line[fieldLength + 1] === ControlChars.Space ? 2 : 1);
+			const valueOffset =
+				fieldLength + (line[fieldLength + 1] === ControlChars.Space ? 2 : 1);
 			const value = decoder.decode(line.subarray(valueOffset));
 
 			switch (field) {
-				case 'id':
+				case "id":
 					event.id = value;
 					break;
-				case 'event':
+				case "event":
 					event.event = value;
 					break;
-				case 'data':
-					event.data += event.data ? event.data + '\n' + value : value;
+				case "data":
+					event.data += event.data ? event.data + "\n" + value : value;
 					break;
-				case 'retry':
+				case "retry":
 					const retry = parseInt(value, 10);
 					if (!isNaN(retry)) {
 						event.retry = retry;
@@ -194,7 +140,7 @@ function getEvents(onMessage?: onMessage) {
 					break;
 			}
 		}
-	};
+	}
 }
 
 function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
@@ -205,5 +151,5 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 function newEvent(): ServerEvent {
-	return { id: '', event: '', data: '', retry: undefined };
+	return { id: "", event: "", data: "", retry: undefined };
 }

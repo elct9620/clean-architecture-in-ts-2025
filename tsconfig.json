@@ -50,7 +50,8 @@
 			"@controller/*": ["src/controller/*"],
 			"@presenter/*": ["src/presenter/*"],
 			"@agent/*": ["src/agent/*"],
-			"@view/*": ["src/view/*"]
+			"@view/*": ["src/view/*"],
+			"@api/*": ["src/api/*"]
 		},
 
 		/* Dependency Injection */
