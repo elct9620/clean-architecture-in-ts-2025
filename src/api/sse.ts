@@ -16,15 +16,80 @@ const enum ControlChars {
 
 type onMessage = (event: ServerEvent) => void;
 
-export async function readEvents(stream: ReadableStream, onMessage?: onMessage) {
-	await getBytes(stream, getLines(getEvents(onMessage)));
-}
-
-async function getBytes(stream: ReadableStream, onChunk: (chunk: Uint8Array) => void) {
+export async function* readEvents(stream: ReadableStream): AsyncGenerator<ServerEvent> {
 	const reader = stream.getReader();
-	let buffer: ReadableStreamReadResult<Uint8Array>;
-	while (!(buffer = await reader.read()).done) {
-		onChunk(buffer.value);
+	let buffer: Uint8Array | undefined;
+	let position = 0;
+	let fieldLength = -1;
+	let event = newEvent();
+	const decoder = new TextDecoder();
+
+	try {
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+
+			if (buffer === undefined) {
+				buffer = value;
+			} else {
+				buffer = concat(buffer, value);
+			}
+
+			while (position < buffer.length) {
+				const lineEnd = buffer.indexOf(ControlChars.NewLine, position);
+				if (lineEnd === -1) break;
+
+				const line = buffer.subarray(position, lineEnd);
+				position = lineEnd + 1;
+
+				if (line.length === 0) {
+					if (event.data || event.event) {
+						yield event;
+						event = newEvent();
+					}
+					continue;
+				}
+
+				const colonIndex = line.indexOf(ControlChars.Colon);
+				if (colonIndex === -1) continue;
+
+				const field = decoder.decode(line.subarray(0, colonIndex));
+				const valueStart = colonIndex + (line[colonIndex + 1] === ControlChars.Space ? 2 : 1);
+				const value = decoder.decode(line.subarray(valueStart));
+
+				switch (field) {
+					case 'id':
+						event.id = value;
+						break;
+					case 'event':
+						event.event = value;
+						break;
+					case 'data':
+						event.data += event.data ? '\n' + value : value;
+						break;
+					case 'retry':
+						const retry = parseInt(value, 10);
+						if (!isNaN(retry)) {
+							event.retry = retry;
+						}
+						break;
+				}
+			}
+
+			if (position === buffer.length) {
+				buffer = undefined;
+				position = 0;
+			} else if (position > 0) {
+				buffer = buffer.subarray(position);
+				position = 0;
+			}
+		}
+
+		if (event.data || event.event) {
+			yield event;
+		}
+	} finally {
+		reader.releaseLock();
 	}
 }
 
