@@ -34,6 +34,7 @@ export default defineConfig(({ mode }) => {
 				entry: "./src/index.tsx",
 			}),
 			tsconfigPaths(),
+			tailwindcss(),
 		] as Plugin[], // NOTE: Not sure hono plugin is typed correctly
 	};
 });
