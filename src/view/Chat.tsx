@@ -3,11 +3,7 @@ import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 import { chatWithAssistant } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
-
-interface Message {
-	role: "user" | "assistant";
-	content: string;
-}
+import { Message, Role } from "./types/Message";
 
 function messagesReducer(
 	state: Message[],
@@ -15,9 +11,9 @@ function messagesReducer(
 ): Message[] {
 	switch (action.type) {
 		case "ADD_USER_MESSAGE":
-			return [...state, { role: "user", content: action.payload }];
+			return [...state, { role: Role.User, content: action.payload }];
 		case "ADD_ASSISTANT_MESSAGE":
-			return [...state, { role: "assistant", content: "" }];
+			return [...state, { role: Role.Assistant, content: "" }];
 		case "UPDATE_LAST_MESSAGE":
 			return state.map((msg, index) =>
 				index === state.length - 1
