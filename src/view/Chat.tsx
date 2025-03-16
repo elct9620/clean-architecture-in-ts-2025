@@ -3,7 +3,7 @@ import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 import { chatWithAssistant } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
-import { Message, Role } from "./types/Message";
+import { ActionType, Message, Role } from "./types/Message";
 
 function messagesReducer(
 	state: Message[],
