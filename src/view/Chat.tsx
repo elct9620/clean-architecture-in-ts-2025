@@ -66,9 +66,13 @@ export const Chat: FC = () => {
 	);
 
 	return (
-		<div class="chat-container">
-			<ChatMessage messages={messages} />
-			<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+		<div className="flex flex-col h-screen bg-gray-100">
+			<div className="flex-1 overflow-y-auto p-4">
+				<ChatMessage messages={messages} />
+			</div>
+			<div className="border-t border-gray-200 p-4 bg-white">
+				<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+			</div>
 		</div>
 	);
 };

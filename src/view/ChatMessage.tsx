@@ -11,13 +11,22 @@ interface ChatMessageProps {
 
 export const ChatMessage: FC<ChatMessageProps> = ({ messages }) => {
 	return (
-		<div class="messages-container">
+		<div className="space-y-4">
 			{messages.length === 0 ? (
-				<div class="empty-state">開始與 AI 助手對話吧！</div>
+				<div className="text-center py-10 text-gray-500">
+					開始與 AI 助手對話吧！
+				</div>
 			) : (
 				messages.map((msg, index) => (
-					<div key={index} class={`message ${msg.role}`}>
-						<div class="message-content">{msg.content}</div>
+					<div
+						key={index}
+						className={`p-3 rounded-lg max-w-[80%] ${
+							msg.role === "user"
+								? "ml-auto bg-blue-500 text-white"
+								: "bg-white border border-gray-200 shadow-sm"
+						}`}
+					>
+						<div className="whitespace-pre-wrap">{msg.content}</div>
 					</div>
 				))
 			)}
