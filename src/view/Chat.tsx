@@ -7,14 +7,14 @@ import { Message, Role } from "./types/Message";
 
 function messagesReducer(
 	state: Message[],
-	action: { type: string; payload: any },
+	action: { type: ActionType; payload: any },
 ): Message[] {
 	switch (action.type) {
-		case "ADD_USER_MESSAGE":
+		case ActionType.AddUserMessage:
 			return [...state, { role: Role.User, content: action.payload }];
-		case "ADD_ASSISTANT_MESSAGE":
+		case ActionType.AddAssistantMessage:
 			return [...state, { role: Role.Assistant, content: "" }];
-		case "UPDATE_LAST_MESSAGE":
+		case ActionType.UpdateLastMessage:
 			return state.map((msg, index) =>
 				index === state.length - 1
 					? { ...msg, content: msg.content + action.payload }
@@ -27,14 +27,14 @@ function messagesReducer(
 
 async function doChat(
 	message: string,
-	dispatcher: (type: string, payload: any) => void,
+	dispatcher: (type: ActionType, payload: any) => void,
 ) {
-	dispatcher("ADD_USER_MESSAGE", message);
-	dispatcher("ADD_ASSISTANT_MESSAGE", "");
+	dispatcher(ActionType.AddUserMessage, message);
+	dispatcher(ActionType.AddAssistantMessage, "");
 
 	const events = chatWithAssistant("1", message);
 	for await (const event of events) {
-		dispatcher("UPDATE_LAST_MESSAGE", event.content);
+		dispatcher(ActionType.UpdateLastMessage, event.content);
 	}
 }
 
@@ -43,7 +43,7 @@ export const Chat: FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleMessageDispatch = useCallback(
-		(type: string, payload: any) => {
+		(type: ActionType, payload: any) => {
 			dispatch({ type, payload });
 		},
 		[dispatch],
