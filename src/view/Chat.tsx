@@ -1,6 +1,8 @@
 import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 
 import { chatWithAssistant } from "@api/chat";
+import { ChatInput } from "./ChatInput";
+import { ChatMessage } from "./ChatMessage";
 
 interface Message {
 	role: "user" | "assistant";
@@ -42,7 +44,6 @@ async function doChat(
 
 export const Chat: FC = () => {
 	const [messages, dispatch] = useReducer(messagesReducer, []);
-	const [inputValue, setInputValue] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleMessageDispatch = useCallback(
@@ -52,49 +53,22 @@ export const Chat: FC = () => {
 		[dispatch],
 	);
 
-	const handleSubmit = useCallback(
-		async (e: Event) => {
-			e.preventDefault();
-			if (!inputValue.trim() || isLoading) return;
-
+	const handleSendMessage = useCallback(
+		async (message: string) => {
 			setIsLoading(true);
 			try {
-				await doChat(inputValue, handleMessageDispatch);
+				await doChat(message, handleMessageDispatch);
 			} finally {
-				setInputValue("");
 				setIsLoading(false);
 			}
 		},
-		[inputValue, isLoading, handleMessageDispatch],
+		[handleMessageDispatch],
 	);
 
 	return (
 		<div class="chat-container">
-			<div class="messages-container">
-				{messages.length === 0 ? (
-					<div class="empty-state">開始與 AI 助手對話吧！</div>
-				) : (
-					messages.map((msg, index) => (
-						<div key={index} class={`message ${msg.role}`}>
-							<div class="message-content">{msg.content}</div>
-						</div>
-					))
-				)}
-			</div>
-
-			<form onSubmit={handleSubmit} class="input-form">
-				<input
-					type="text"
-					value={inputValue}
-					onInput={(e) => setInputValue((e.target as HTMLInputElement).value)}
-					placeholder="輸入訊息..."
-					disabled={isLoading}
-					class="message-input"
-				/>
-				<button type="submit" disabled={isLoading} class="send-button">
-					{isLoading ? "發送中..." : "發送"}
-				</button>
-			</form>
+			<ChatMessage messages={messages} />
+			<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
 		</div>
 	);
 };
