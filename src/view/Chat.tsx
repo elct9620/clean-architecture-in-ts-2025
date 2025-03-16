@@ -10,7 +10,7 @@ interface Message {
 function messagesReducer(
 	state: Message[],
 	action: { type: string; payload: any },
-) {
+): Message[] {
 	switch (action.type) {
 		case "ADD_USER_MESSAGE":
 			return [...state, { role: "user", content: action.payload }];
