@@ -2,6 +2,10 @@
 
 These are coding guidelines that should be followed when writing code for the application.
 
+## Introduction
+
+This a ecommerce application example that uses Clean Architecture in TypeScript.
+
 ## Technologies
 
 - **Cloudflare Workers**: Use Cloudflare Workers to deploy the application.
