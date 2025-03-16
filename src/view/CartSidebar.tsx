@@ -43,7 +43,7 @@ export const CartSidebar: FC = () => {
 	return (
 		<div className="w-80 h-screen bg-white border-l border-gray-200 p-4 flex flex-col">
 			<h2 className="text-xl font-bold mb-4">購物車 ({totalItems})</h2>
-			
+
 			<div className="flex-1 overflow-y-auto space-y-4">
 				{cartItems.map((item) => (
 					<div key={item.id} className="flex border-b border-gray-100 pb-4">
@@ -70,7 +70,7 @@ export const CartSidebar: FC = () => {
 					</div>
 				))}
 			</div>
-			
+
 			<div className="border-t border-gray-200 pt-4 mt-4">
 				<div className="flex justify-between mb-2">
 					<span>小計</span>
