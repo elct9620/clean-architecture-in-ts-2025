@@ -1,45 +1,57 @@
-# Application Development Conventions
+# Coding Guidelines
 
-These conventions are used to guide the development of the application which is built using the Clean Architecture principles.
-
-## General
-
-- **File Naming**: Use PascalCase for file names, e.g. `MyFile.ts`.
-- **Directory Naming**: Use snake_case for directory names, e.g. `my_directory`.
+These are coding guidelines that should be followed when writing code for the application.
 
 ## Technologies
 
 - **Cloudflare Workers**: Use Cloudflare Workers to deploy the application.
 - **Cloudflare KV**: Use Cloudflare KV to store the application data, with prefix e.g. `user:{id}`, `session:{id}`.
+- **Hono**: Use Hono as the web framework.
+- **TailwindCSS 4**: Use TailwindCSS 4 as the CSS framework.
 
-## Structure
+## Naming
 
-The project is structured as follows:
+- Use PascalCase for file names, e.g. `MyFile.ts`, `App.tsx`.
+- Use PascalCase for `type` names.
+- Use PascalCase for `enum` values.
+- Use camelCase for `function` and `method` names.
+- Use camelCase for `property` names and `local variable`.
+- Use whole words in names when possible.
 
-- **src**: Contains the source code of the application.
-  - **entity**: The core business rules, the files is maintained by humans.
-  - **usecase**: The application rules, the files is maintained by humans.
-  - **controller**: The adapter to convert http request to usecase input.
-  - **presenter**: The adapter to convert usecase output to http response.
-  - **repository**: The adapter to convert database query to entity.
-  - **agent**: The adapter to interact with Language Model.
-- **tsconfig.json**: The TypeScript configuration file.
+## Types
 
-## TypeScript
+- Do not export `types` or `functions` unless you need share it across multiple files.
+- Do not introduce new `types` or `values` to global namespace.
 
-- **Imports**: Use `tsconfig.json` paths to import files, e.g. `import { Product } from '@entity/Product'`.
+## Comments
+
+- Do not use comments to explain what the code does, write code that is self-explanatory.
+- Only use comments use JSDoc to document the public API of a module.
+
+## Source Code Organization
+
+The source code are put in the `src` directory, and the files are organized as follows:
+
+- The `entity` contains the core business rules, always read-only.
+- The `usecase` contains the application rules, always read-only.
+- The `controller` contains the adapter to call the usecase, use Hono controller style.
+- The `presenter` implements the interface defined in the `usecase` to handle the output.
+- The `repository` implements the interface defined in the `usecase` to handle the data access.
+- The `agent` implements the interface defined in the `usecase` to interact with Language Model.
+- The `api` use `controller` to implement the Hono RPC api client.
+- The `view` contains the JSX files for the UI.
+
+When importing files, use the `tsconfig.json`defined paths to import files, e.g. `import { Product } from '@entity/Product'`.
 
 ## Dependency Injection
 
-The application uses the `tsyringe-neo` library for dependency injection, which is configured in the `src/container.ts` file.
+The dependency is managed by `tsyringe-neo` which is a fork of `tsyringe`.
 
-- **Container**: Use `tsyringe-neo` as the dependency injection container.
-- **Injectable**: Use `@injectable` to mark a class as injectable, only adapters is injectable. e.g. `controller`, `presenter`, `repository`.
-- **Inject**: Use `@inject` to inject a dependency into a class, e.g. `@inject('ProductRepository')`. Prefer inject as private property.
-- **Singleton**: Avoid using `@singleton` to mark a class as singleton, if needed ask the team for approval.
-- **Register**: Use `container.register` to register a dependency in `src/container.ts`.
+- Use `@injectable` decorator to make a class injectable, only `presenter`, `repository`, `agent` is injectable.
+- Use `@inject` decorator to inject a dependency into a class, e.g. `@inject(ProductRepository)`.
+- Use Symbol to define the interface as a token, e.g. `const ProductRepository = Symbol('ProductRepository')`.
 
-## Controller
+## Hono Controller
 
 The controller in the `src/controller` isn't a class, it should be a Hono routes.
 
