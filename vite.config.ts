@@ -1,6 +1,7 @@
 import build from "@hono/vite-build/cloudflare-workers";
 import devServer from "@hono/vite-dev-server";
 import cloudflareAdapter from "@hono/vite-dev-server/cloudflare";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -19,7 +20,7 @@ export default defineConfig(({ mode }) => {
 				emptyOutDir: false,
 				copyPublicDir: false,
 			},
-			plugins: [tsconfigPaths()],
+			plugins: [tsconfigPaths(), tailwindcss()],
 		};
 	}
 
