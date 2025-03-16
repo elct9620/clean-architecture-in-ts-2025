@@ -8,6 +8,7 @@ These are coding guidelines that should be followed when writing code for the ap
 - **Cloudflare KV**: Use Cloudflare KV to store the application data, with prefix e.g. `user:{id}`, `session:{id}`.
 - **Hono**: Use Hono as the web framework.
 - **TailwindCSS 4**: Use TailwindCSS 4 as the CSS framework.
+- **AI SDK**: Use Vercel AI SDK to interact with Language Model.
 
 ## Naming
 
