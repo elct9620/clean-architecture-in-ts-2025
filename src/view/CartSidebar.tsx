@@ -20,14 +20,14 @@ export const CartSidebar: FC = () => {
 		},
 		{
 			id: "2",
-			name: "智能手錶",
+			name: "智慧手錶",
 			price: 2499,
 			quantity: 1,
 			image: "https://placehold.co/80x80",
 		},
 		{
 			id: "3",
-			name: "便攜式充電寶",
+			name: "隨身充",
 			price: 799,
 			quantity: 2,
 			image: "https://placehold.co/80x80",
