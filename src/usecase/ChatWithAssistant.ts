@@ -17,9 +17,13 @@ export class ChatWithAssistant {
 		conversation.addMessage(Role.User, content);
 
 		const reply = await this.agent.chat(conversation.messages);
+
+		let assistantMessage = "";
 		for await (const chunk of reply) {
+			assistantMessage += chunk;
 			await this.presenter.messagePartial(chunk);
 		}
+		conversation.addMessage(Role.Assistant, assistantMessage);
 
 		await this.conversations.save(conversation);
 	}
