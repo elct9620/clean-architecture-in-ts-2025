@@ -3,6 +3,7 @@ import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 import { chatWithAssistant } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
+import { useSession } from "./state/session";
 import { ActionType, Message, Role } from "./types/Message";
 
 function messagesReducer(
@@ -26,19 +27,21 @@ function messagesReducer(
 }
 
 async function doChat(
+	sessionId: string,
 	message: string,
 	dispatcher: (type: ActionType, payload: any) => void,
 ) {
 	dispatcher(ActionType.AddUserMessage, message);
 	dispatcher(ActionType.AddAssistantMessage, "");
 
-	const events = chatWithAssistant("1", message);
+	const events = chatWithAssistant(sessionId, message);
 	for await (const event of events) {
 		dispatcher(ActionType.UpdateLastMessage, event.content);
 	}
 }
 
 export const Chat: FC = () => {
+	const sessionId = useSession();
 	const [messages, dispatch] = useReducer(messagesReducer, []);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -53,12 +56,12 @@ export const Chat: FC = () => {
 		async (message: string) => {
 			setIsLoading(true);
 			try {
-				await doChat(message, handleMessageDispatch);
+				await doChat(sessionId, message, handleMessageDispatch);
 			} finally {
 				setIsLoading(false);
 			}
 		},
-		[handleMessageDispatch],
+		[sessionId, handleMessageDispatch],
 	);
 
 	return (
