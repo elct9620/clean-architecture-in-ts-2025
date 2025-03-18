@@ -29,5 +29,6 @@ export class ChatWithAssistant {
 		conversation.addMessage(Role.Assistant, assistantMessage);
 
 		await this.conversations.save(conversation);
+		await this.carts.save(cart);
 	}
 }
