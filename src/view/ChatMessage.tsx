@@ -1,29 +1,11 @@
 import { FC, useEffect, useRef } from "hono/jsx/dom";
 import { Message, Role } from "./types/Message";
+import { LoadingAnimation } from "./LoadingAnimation";
 
 interface ChatMessageProps {
 	messages: Message[];
 	loading?: boolean;
 }
-
-const LoadingAnimation: FC = () => {
-	return (
-		<div className="flex space-x-2">
-			<div
-				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-				style={{ animationDelay: "0ms" }}
-			></div>
-			<div
-				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-				style={{ animationDelay: "150ms" }}
-			></div>
-			<div
-				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-				style={{ animationDelay: "300ms" }}
-			></div>
-		</div>
-	);
-};
 
 export const ChatMessage: FC<ChatMessageProps> = ({
 	messages,
