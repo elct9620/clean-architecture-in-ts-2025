@@ -1,13 +1,14 @@
 import { CartSidebar } from "@view/CartSidebar";
 import { Chat } from "@view/Chat";
-import { SessionContext } from "@view/state/session";
+import { SessionContext, getOrCreateSessionId } from "@view/state/session";
 import { FC } from "hono/jsx/dom";
 
 import "@view/style.css";
 
 export const App: FC = () => {
 	// 為整個應用程序提供 SessionContext
-	const sessionId = crypto.randomUUID();
+	// 使用 localStorage 中的會話 ID 或創建新的
+	const sessionId = getOrCreateSessionId();
 
 	return (
 		<SessionContext.Provider value={sessionId}>
