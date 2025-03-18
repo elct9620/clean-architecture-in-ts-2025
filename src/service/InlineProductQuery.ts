@@ -6,66 +6,21 @@ import { ProductQuery } from "@/usecase/interface";
 @injectable()
 export class InlineProductQuery implements ProductQuery {
 	private products: Product[] = [
-		new Product(
-			"p001",
-			"無線藍牙耳機",
-			1299,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p002",
-			"智慧手錶",
-			2499,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p003",
-			"隨身充電寶",
-			799,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p004",
-			"機械鍵盤",
-			1899,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p005",
-			"無線滑鼠",
-			699,
-			"https://placehold.co/300x300",
-		),
+		new Product("p001", "無線藍牙耳機", 1299, "https://placehold.co/300x300"),
+		new Product("p002", "智慧手錶", 2499, "https://placehold.co/300x300"),
+		new Product("p003", "隨身充電寶", 799, "https://placehold.co/300x300"),
+		new Product("p004", "機械鍵盤", 1899, "https://placehold.co/300x300"),
+		new Product("p005", "無線滑鼠", 699, "https://placehold.co/300x300"),
 		new Product(
 			"p006",
 			"筆記型電腦散熱墊",
 			599,
 			"https://placehold.co/300x300",
 		),
-		new Product(
-			"p007",
-			"高清網路攝影機",
-			1299,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p008",
-			"智慧音箱",
-			1999,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p009",
-			"防水藍牙喇叭",
-			1499,
-			"https://placehold.co/300x300",
-		),
-		new Product(
-			"p010",
-			"快速充電器",
-			599,
-			"https://placehold.co/300x300",
-		),
+		new Product("p007", "高清網路攝影機", 1299, "https://placehold.co/300x300"),
+		new Product("p008", "智慧音箱", 1999, "https://placehold.co/300x300"),
+		new Product("p009", "防水藍牙喇叭", 1499, "https://placehold.co/300x300"),
+		new Product("p010", "快速充電器", 599, "https://placehold.co/300x300"),
 	];
 
 	async execute(query: string): Promise<Product[]> {
