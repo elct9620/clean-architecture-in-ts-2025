@@ -4,7 +4,7 @@ These are coding guidelines that should be followed when writing code for the ap
 
 ## Introduction
 
-This a ecommerce application example that uses Clean Architecture in TypeScript.
+This a ecommerce application example that uses Clean Architecture in TypeScript. When use Chinese, make sure to use Traditional Chinese and the Taiwan locale.
 
 ## Technologies
 
@@ -30,7 +30,6 @@ This a ecommerce application example that uses Clean Architecture in TypeScript.
 
 ## Comments
 
-- Do not use comments to explain what the code does, write code that is self-explanatory.
 - Only use comments use JSDoc to document the public API of a module.
 
 ## Source Code Organization
