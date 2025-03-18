@@ -6,8 +6,6 @@ import { FC } from "hono/jsx/dom";
 import "@view/style.css";
 
 export const App: FC = () => {
-	// 為整個應用程序提供 SessionContext
-	// 使用 localStorage 中的會話 ID 或創建新的
 	const sessionId = getOrCreateSessionId();
 
 	return (
