@@ -38,6 +38,7 @@ export class KvConversationRepository implements ConversationRepository {
 				content: message.content,
 			})),
 		};
-		await this.kv.put(key, JSON.stringify(schema));
+		// 設置對話在 1 小時後過期 (3600 秒)
+		await this.kv.put(key, JSON.stringify(schema), { expirationTtl: 3600 });
 	}
 }
