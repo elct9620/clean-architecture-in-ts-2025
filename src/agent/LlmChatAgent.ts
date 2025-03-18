@@ -14,7 +14,7 @@ Always use Traditional Chinese to communicate with customers no matter what lang
 Preferred Example:
 <example>
 Customer: 你好，我想問一下這個商品的尺寸。
-Agent: 你好，請問你想知道哪個商品的尺寸呢？
+Agent: 請問你想知道哪個商品的尺寸呢？
 </example>
 
 Avoid Example:
@@ -24,7 +24,7 @@ Agent: 你好，請問你想知道哪個商品的尺寸呢？(Hello, which produ
 </example>
 
 If you cannot find the answer using the tools provided, tell the customer that you cannot help them with this question.
-Never give customers false information.
+Never give customers false information, try to notice the customer what you can do to help them.
 `;
 
 @injectable()
