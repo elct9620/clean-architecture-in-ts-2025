@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe-neo";
 
 import { KvStore } from "@/container";
-import { Cart, CartItem } from "@/entity/Cart";
+import { Cart } from "@/entity/Cart";
 import { CartRepository } from "@/usecase/interface";
 import { SessionId } from "@entity/Session";
 
