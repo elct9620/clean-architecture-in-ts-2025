@@ -67,7 +67,7 @@ export const Chat: FC = () => {
 	return (
 		<div className="flex flex-col h-screen bg-gray-100">
 			<div className="bg-white p-2 border-b border-gray-200 text-xs text-gray-500 flex justify-end">
-				<span>會話 ID: {sessionId.substring(0, 8)}...</span>
+				<span>Session ID: {sessionId}</span>
 			</div>
 			<div className="flex-1 overflow-y-auto p-4">
 				<ChatMessage messages={messages} />
