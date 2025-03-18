@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from "hono/jsx/dom";
-import { Message, Role } from "./types/Message";
 import { LoadingAnimation } from "./LoadingAnimation";
+import { Message, Role } from "./types/Message";
 
 interface ChatMessageProps {
 	messages: Message[];
