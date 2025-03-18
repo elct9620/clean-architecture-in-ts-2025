@@ -5,34 +5,60 @@ import { z } from "zod";
 import { LlmModel } from "@/container";
 import { Cart } from "@/entity/Cart";
 import { Message } from "@/entity/Conversation";
-import { ChatAgent } from "@/usecase/interface";
+import { ChatAgent, ProductQuery } from "@/usecase/interface";
 
 const system = `
-Yor are a E-Commerce customer service agent.
+Your mission is to help customers find the product they want and provide them with the information they need.
 Use simple and clear language to communicate with customers, and provide them with the best service.
 Always use Traditional Chinese to communicate with customers no matter what language they use.
 
-Preferred Example:
+## Preferred Example
+
+Give a clear answer to the customer's question.
 <example>
 Customer: 你好，我想問一下這個商品的尺寸。
 Agent: 請問你想知道哪個商品的尺寸呢？
 </example>
 
-Avoid Example:
+Provide the customer with the information they need.
+<example>
+Customer: 我可以協助您搜尋商品資訊。您想找什麼商品呢？
+Agent: 您想找的電腦資訊，目前搜尋到「筆記型電腦散熱墊」。請問您是要找其他類型的電腦嗎？
+Customer: 是
+Agent: 沒有找到其他類型的電腦。
+</example>
+
+## Avoid Example
+
+Repeat the answer with different words.
 <example>
 Customer: Hi
 Agent: 你好，請問你想知道哪個商品的尺寸呢？(Hello, which product size do you want to know?)
 </example>
 
+Repeat the same answer.
+<example>
+Customer: 我可以協助您搜尋商品資訊。您想找什麼商品呢？
+Agent: 您想找的電腦資訊，目前搜尋到「筆記型電腦散熱墊」。請問您是要找其他類型的電腦嗎？
+Customer: 是
+Agent: 您想找的電腦資訊，目前搜尋到「筆記型電腦散熱墊」。請問您是要找其他類型的電腦嗎？
+</example>
+
+## Rules
+
 If you cannot find the answer using the tools provided, tell the customer that you cannot help them with this question.
-Never give customers false information, try to notice the customer what you can do to help them.
+Never give customers false information, no need to give technical details, and do not provide personal opinions.
 `;
 
 @injectable()
 export class LlmChatAgent implements ChatAgent {
 	constructor(@inject(LlmModel) private readonly model: LanguageModel) {}
 
-	async *chat(cart: Cart, messages: Message[]): AsyncIterable<string> {
+	async *chat(
+		cart: Cart,
+		productQuery: ProductQuery,
+		messages: Message[],
+	): AsyncIterable<string> {
 		const { textStream, steps } = await streamText({
 			model: this.model,
 			system,
@@ -47,12 +73,24 @@ export class LlmChatAgent implements ChatAgent {
 					parameters: z.object({}),
 					execute: async ({}) => {
 						return {
-							products: [
-								{
-									name: "滑鼠",
-									price: 100,
-								},
-							],
+							products: (await productQuery.execute("")).map((p) => ({
+								name: p.name,
+								price: p.price,
+							})),
+						};
+					},
+				}),
+				searchProduct: tool({
+					description: "Search products by name",
+					parameters: z.object({
+						query: z.string(),
+					}),
+					execute: async ({ query }) => {
+						return {
+							products: (await productQuery.execute(query)).map((p) => ({
+								name: p.name,
+								price: p.price,
+							})),
 						};
 					},
 				}),

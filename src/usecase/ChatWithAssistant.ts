@@ -3,6 +3,7 @@ import {
 	CartRepository,
 	ChatAgent,
 	ConversationRepository,
+	ProductQuery,
 	StreamingEventPresenter,
 } from "./interface";
 
@@ -10,6 +11,7 @@ export class ChatWithAssistant {
 	constructor(
 		private readonly conversations: ConversationRepository,
 		private readonly carts: CartRepository,
+		private readonly productQuery: ProductQuery,
 		private readonly presenter: StreamingEventPresenter,
 		private readonly agent: ChatAgent,
 	) {}
@@ -19,7 +21,11 @@ export class ChatWithAssistant {
 		const conversation = await this.conversations.find(sessionId);
 		conversation.addMessage(Role.User, content);
 
-		const reply = await this.agent.chat(cart, conversation.messages);
+		const reply = await this.agent.chat(
+			cart,
+			this.productQuery,
+			conversation.messages,
+		);
 
 		let assistantMessage = "";
 		for await (const chunk of reply) {

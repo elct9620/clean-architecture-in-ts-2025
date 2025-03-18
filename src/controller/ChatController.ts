@@ -7,6 +7,7 @@ import { LlmChatAgent } from "@/agent/LlmChatAgent";
 import { HonoServerEventPresenter } from "@/presenter/StreamingEventPresenter";
 import { KvCartRepository } from "@/repository/KvCartRepository";
 import { KvConversationRepository } from "@/repository/KvConversationRepository";
+import { InlineProductQuery } from "@/service/InlineProductQuery";
 import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
 import { container } from "tsyringe-neo";
 
@@ -22,11 +23,13 @@ const routes = app.post("/", zValidator("json", schema), async (c) => {
 		const { sessionId, content } = c.req.valid("json");
 		const conversations = container.resolve(KvConversationRepository);
 		const carts = container.resolve(KvCartRepository);
+		const productQuery = container.resolve(InlineProductQuery);
 		const presenter = new HonoServerEventPresenter(stream);
 		const agent = container.resolve(LlmChatAgent);
 		const chatWithAssistant = new ChatWithAssistant(
 			conversations,
 			carts,
+			productQuery,
 			presenter,
 			agent,
 		);

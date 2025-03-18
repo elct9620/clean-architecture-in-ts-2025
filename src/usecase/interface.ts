@@ -22,5 +22,9 @@ export interface StreamingEventPresenter {
 }
 
 export interface ChatAgent {
-	chat(cart: Cart, messages: Message[]): AsyncIterable<string>;
+	chat(
+		cart: Cart,
+		productQuery: ProductQuery,
+		messages: Message[],
+	): AsyncIterable<string>;
 }
