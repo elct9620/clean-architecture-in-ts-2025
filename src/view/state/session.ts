@@ -31,7 +31,7 @@ export function getOrCreateSessionId(): string {
 	const newSessionId = crypto.randomUUID();
 	localStorage.setItem(SESSION_KEY, newSessionId);
 	localStorage.setItem(SESSION_EXPIRY_KEY, (now + SESSION_EXPIRY).toString());
-	
+
 	return newSessionId;
 }
 
