@@ -1,5 +1,6 @@
 import { Cart } from "@/entity/Cart";
 import { Conversation, Message } from "@/entity/Conversation";
+import { Product } from "@/entity/Product";
 import { SessionId } from "@entity/Session";
 
 export interface ConversationRepository {
@@ -10,6 +11,10 @@ export interface ConversationRepository {
 export interface CartRepository {
 	find(sessionId: SessionId): Promise<Cart>;
 	save(cart: Cart): Promise<void>;
+}
+
+export interface ProductQuery {
+	execute(query: string): Promise<Product[]>;
 }
 
 export interface StreamingEventPresenter {
