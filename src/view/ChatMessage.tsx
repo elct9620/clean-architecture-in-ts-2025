@@ -9,14 +9,26 @@ interface ChatMessageProps {
 const LoadingAnimation: FC = () => {
 	return (
 		<div className="flex space-x-2 p-3 rounded-lg bg-white border border-gray-200 shadow-sm max-w-[80%]">
-			<div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0ms" }}></div>
-			<div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "150ms" }}></div>
-			<div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "300ms" }}></div>
+			<div
+				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+				style={{ animationDelay: "0ms" }}
+			></div>
+			<div
+				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+				style={{ animationDelay: "150ms" }}
+			></div>
+			<div
+				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+				style={{ animationDelay: "300ms" }}
+			></div>
 		</div>
 	);
 };
 
-export const ChatMessage: FC<ChatMessageProps> = ({ messages, loading = false }) => {
+export const ChatMessage: FC<ChatMessageProps> = ({
+	messages,
+	loading = false,
+}) => {
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 
 	// 當消息列表更新時，自動滾動到底部
