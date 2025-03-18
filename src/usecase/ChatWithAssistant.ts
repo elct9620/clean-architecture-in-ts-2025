@@ -1,5 +1,6 @@
 import { Role } from "@/entity/Conversation";
 import {
+	CartRepository,
 	ChatAgent,
 	ConversationRepository,
 	StreamingEventPresenter,
@@ -8,15 +9,17 @@ import {
 export class ChatWithAssistant {
 	constructor(
 		private readonly conversations: ConversationRepository,
+		private readonly carts: CartRepository,
 		private readonly presenter: StreamingEventPresenter,
 		private readonly agent: ChatAgent,
 	) {}
 
 	async execute(sessionId: string, content: string) {
+		const cart = await this.carts.find(sessionId);
 		const conversation = await this.conversations.find(sessionId);
 		conversation.addMessage(Role.User, content);
 
-		const reply = await this.agent.chat(conversation.messages);
+		const reply = await this.agent.chat(cart, conversation.messages);
 
 		let assistantMessage = "";
 		for await (const chunk of reply) {

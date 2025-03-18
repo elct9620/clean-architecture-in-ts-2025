@@ -3,6 +3,7 @@ import { inject, injectable } from "tsyringe-neo";
 import { z } from "zod";
 
 import { LlmModel } from "@/container";
+import { Cart } from "@/entity/Cart";
 import { Message } from "@/entity/Conversation";
 import { ChatAgent } from "@/usecase/interface";
 
@@ -31,7 +32,7 @@ Never give customers false information, try to notice the customer what you can 
 export class LlmChatAgent implements ChatAgent {
 	constructor(@inject(LlmModel) private readonly model: LanguageModel) {}
 
-	async *chat(messages: Message[]): AsyncIterable<string> {
+	async *chat(cart: Cart, messages: Message[]): AsyncIterable<string> {
 		const { textStream, steps } = await streamText({
 			model: this.model,
 			system,

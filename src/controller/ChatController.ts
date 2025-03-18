@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { LlmChatAgent } from "@/agent/LlmChatAgent";
 import { HonoServerEventPresenter } from "@/presenter/StreamingEventPresenter";
+import { KvCartRepository } from "@/repository/KvCartRepository";
 import { KvConversationRepository } from "@/repository/KvConversationRepository";
 import { ChatWithAssistant } from "@/usecase/ChatWithAssistant";
 import { container } from "tsyringe-neo";
@@ -19,11 +20,13 @@ const schema = z.object({
 const routes = app.post("/", zValidator("json", schema), async (c) => {
 	return streamSSE(c, async (stream) => {
 		const { sessionId, content } = c.req.valid("json");
-		const repository = container.resolve(KvConversationRepository);
+		const conversations = container.resolve(KvConversationRepository);
+		const carts = container.resolve(KvCartRepository);
 		const presenter = new HonoServerEventPresenter(stream);
 		const agent = container.resolve(LlmChatAgent);
 		const chatWithAssistant = new ChatWithAssistant(
-			repository,
+			conversations,
+			carts,
 			presenter,
 			agent,
 		);
