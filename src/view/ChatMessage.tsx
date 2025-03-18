@@ -8,7 +8,7 @@ interface ChatMessageProps {
 
 const LoadingAnimation: FC = () => {
 	return (
-		<div className="flex space-x-2 p-3 rounded-lg bg-white border border-gray-200 shadow-sm max-w-[80%]">
+		<div className="flex space-x-2">
 			<div
 				className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
 				style={{ animationDelay: "0ms" }}
@@ -38,27 +38,40 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 		}
 	}, [messages, loading]);
 
+	// 檢查是否需要顯示助手正在輸入的載入動畫
+	const shouldShowLoading = loading && messages.length > 0 && messages[messages.length - 1].role === Role.User;
+
+	// 創建一個新的消息數組，如果需要顯示載入動畫，則添加一個助手的空消息
+	const displayMessages = shouldShowLoading
+		? [...messages, { role: Role.Assistant, content: "" }]
+		: messages;
+
 	return (
 		<div className="space-y-4">
-			{messages.length === 0 && !loading ? (
+			{displayMessages.length === 0 ? (
 				<div className="text-center py-10 text-gray-500">
 					開始與 AI 助手對話吧！
 				</div>
 			) : (
 				<>
-					{messages.map((msg, index) => (
-						<div
-							key={index}
-							className={`p-3 rounded-lg max-w-[80%] ${
-								msg.role === Role.User
-									? "ml-auto bg-blue-500 text-white"
-									: "bg-white border border-gray-200 shadow-sm"
-							}`}
-						>
-							<div className="whitespace-pre-wrap">{msg.content}</div>
-						</div>
-					))}
-					{loading && <LoadingAnimation />}
+					{displayMessages.map((msg, index) => {
+						const isLastAssistantMessage = shouldShowLoading && index === displayMessages.length - 1;
+						
+						return (
+							<div
+								key={index}
+								className={`p-3 rounded-lg max-w-[80%] ${
+									msg.role === Role.User
+										? "ml-auto bg-blue-500 text-white"
+										: "bg-white border border-gray-200 shadow-sm"
+								}`}
+							>
+								<div className="whitespace-pre-wrap">
+									{isLastAssistantMessage ? <LoadingAnimation /> : msg.content}
+								</div>
+							</div>
+						);
+					})}
 				</>
 			)}
 			{/* 這個空的 div 用於滾動到底部的參考點 */}
