@@ -39,7 +39,10 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 	}, [messages, loading]);
 
 	// 檢查是否需要顯示助手正在輸入的載入動畫
-	const shouldShowLoading = loading && messages.length > 0 && messages[messages.length - 1].role === Role.User;
+	const shouldShowLoading =
+		loading &&
+		messages.length > 0 &&
+		messages[messages.length - 1].role === Role.User;
 
 	// 創建一個新的消息數組，如果需要顯示載入動畫，則添加一個助手的空消息
 	const displayMessages = shouldShowLoading
@@ -55,8 +58,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 			) : (
 				<>
 					{displayMessages.map((msg, index) => {
-						const isLastAssistantMessage = shouldShowLoading && index === displayMessages.length - 1;
-						
+						const isLastAssistantMessage =
+							shouldShowLoading && index === displayMessages.length - 1;
+
 						return (
 							<div
 								key={index}
