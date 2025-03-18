@@ -1,7 +1,7 @@
-import { type LanguageModel, streamText, tool } from "ai";
+import { type LanguageModel, streamText } from "ai";
 import { inject, injectable } from "tsyringe-neo";
-import { z } from "zod";
 
+import { ProductTool } from "@/agent/ProductTool";
 import { LlmModel } from "@/container";
 import { Cart } from "@/entity/Cart";
 import { Message } from "@/entity/Conversation";
@@ -59,7 +59,9 @@ export class LlmChatAgent implements ChatAgent {
 		productQuery: ProductQuery,
 		messages: Message[],
 	): AsyncIterable<string> {
-		const { textStream, steps } = await streamText({
+		const productTool = ProductTool.create(productQuery);
+		
+		const { textStream } = await streamText({
 			model: this.model,
 			system,
 			messages: messages.map((message) => ({
@@ -67,34 +69,7 @@ export class LlmChatAgent implements ChatAgent {
 				content: message.content,
 			})),
 			maxSteps: 5,
-			tools: {
-				listProduct: tool({
-					description: "List products by name",
-					parameters: z.object({}),
-					execute: async ({}) => {
-						return {
-							products: (await productQuery.execute("")).map((p) => ({
-								name: p.name,
-								price: p.price,
-							})),
-						};
-					},
-				}),
-				searchProduct: tool({
-					description: "Search products by name",
-					parameters: z.object({
-						query: z.string(),
-					}),
-					execute: async ({ query }) => {
-						return {
-							products: (await productQuery.execute(query)).map((p) => ({
-								name: p.name,
-								price: p.price,
-							})),
-						};
-					},
-				}),
-			},
+			tools: productTool.getTools(),
 		});
 
 		for await (const chunk of textStream) {
