@@ -31,25 +31,21 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 }) => {
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 
-	// 當消息列表更新時，自動滾動到底部
 	useEffect(() => {
 		if (messagesEndRef.current) {
 			messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
 		}
 	}, [messages, loading]);
 
-	// 使用原始消息數組，不需要添加額外的消息
-	const displayMessages = messages;
-
 	return (
 		<div className="space-y-4">
-			{displayMessages.length === 0 ? (
+			{messages.length === 0 ? (
 				<div className="text-center py-10 text-gray-500">
 					開始與 AI 助手對話吧！
 				</div>
 			) : (
 				<>
-					{displayMessages.map((msg, index) => {
+					{messages.map((msg, index) => {
 						return (
 							<div
 								key={index}
@@ -71,7 +67,6 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 					})}
 				</>
 			)}
-			{/* 這個空的 div 用於滾動到底部的參考點 */}
 			<div ref={messagesEndRef} />
 		</div>
 	);
