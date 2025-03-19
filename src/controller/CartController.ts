@@ -26,12 +26,12 @@ const mockCarts: Record<string, any> = {
 // 獲取購物車內容
 app.get("/", async (c) => {
 	const sessionId = c.req.query("sessionId") || "default-session";
-	
+
 	// 如果該 session 沒有購物車，創建一個空的
 	if (!mockCarts[sessionId]) {
 		mockCarts[sessionId] = { items: [] };
 	}
-	
+
 	return c.json(mockCarts[sessionId]);
 });
 
@@ -45,15 +45,17 @@ const addItemSchema = z.object({
 
 app.post("/add", zValidator("json", addItemSchema), async (c) => {
 	const { sessionId, name, price, quantity } = c.req.valid("json");
-	
+
 	// 如果該 session 沒有購物車，創建一個空的
 	if (!mockCarts[sessionId]) {
 		mockCarts[sessionId] = { items: [] };
 	}
-	
+
 	const cart = mockCarts[sessionId];
-	const existingItemIndex = cart.items.findIndex((item: any) => item.name === name);
-	
+	const existingItemIndex = cart.items.findIndex(
+		(item: any) => item.name === name,
+	);
+
 	if (existingItemIndex >= 0) {
 		// 如果商品已存在，增加數量
 		cart.items[existingItemIndex].quantity += quantity;
@@ -61,7 +63,7 @@ app.post("/add", zValidator("json", addItemSchema), async (c) => {
 		// 如果商品不存在，添加新商品
 		cart.items.push({ name, price, quantity });
 	}
-	
+
 	return c.json({ success: true, cart });
 });
 
@@ -74,20 +76,22 @@ const updateItemSchema = z.object({
 
 app.post("/update", zValidator("json", updateItemSchema), async (c) => {
 	const { sessionId, name, quantity } = c.req.valid("json");
-	
+
 	if (!mockCarts[sessionId]) {
 		return c.json({ success: false, message: "購物車不存在" }, 404);
 	}
-	
+
 	const cart = mockCarts[sessionId];
-	const existingItemIndex = cart.items.findIndex((item: any) => item.name === name);
-	
+	const existingItemIndex = cart.items.findIndex(
+		(item: any) => item.name === name,
+	);
+
 	if (existingItemIndex < 0) {
 		return c.json({ success: false, message: "商品不存在" }, 404);
 	}
-	
+
 	cart.items[existingItemIndex].quantity = quantity;
-	
+
 	return c.json({ success: true, cart });
 });
 
@@ -99,20 +103,22 @@ const removeItemSchema = z.object({
 
 app.post("/remove", zValidator("json", removeItemSchema), async (c) => {
 	const { sessionId, name } = c.req.valid("json");
-	
+
 	if (!mockCarts[sessionId]) {
 		return c.json({ success: false, message: "購物車不存在" }, 404);
 	}
-	
+
 	const cart = mockCarts[sessionId];
-	const existingItemIndex = cart.items.findIndex((item: any) => item.name === name);
-	
+	const existingItemIndex = cart.items.findIndex(
+		(item: any) => item.name === name,
+	);
+
 	if (existingItemIndex < 0) {
 		return c.json({ success: false, message: "商品不存在" }, 404);
 	}
-	
+
 	cart.items.splice(existingItemIndex, 1);
-	
+
 	return c.json({ success: true, cart });
 });
 
@@ -123,13 +129,13 @@ const clearCartSchema = z.object({
 
 app.post("/clear", zValidator("json", clearCartSchema), async (c) => {
 	const { sessionId } = c.req.valid("json");
-	
+
 	if (!mockCarts[sessionId]) {
 		return c.json({ success: false, message: "購物車不存在" }, 404);
 	}
-	
+
 	mockCarts[sessionId] = { items: [] };
-	
+
 	return c.json({ success: true, cart: mockCarts[sessionId] });
 });
 
