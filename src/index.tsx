@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { Hono } from "hono";
 import { container } from "tsyringe-neo";
 
+import CartController from "@controller/CartController";
 import ChatController from "@controller/ChatController";
 import { Config } from "./config";
 import { KvStore } from "./container";
@@ -47,7 +48,7 @@ app.get("/", (c) =>
 	),
 );
 app.route("/api/chat", ChatController);
-app.route("/api/cart", (await import("@controller/CartController")).default);
+app.route("/api/cart", CartController);
 
 export default {
 	fetch: app.fetch,
