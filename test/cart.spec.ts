@@ -6,12 +6,15 @@ describe("Cart Controller", () => {
 
 	it("responds with cart data", async () => {
 		// 測試獲取購物車數據
-		const response = await SELF.fetch(`https://example.com/api/cart?sessionId=${sessionId}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
+		const response = await SELF.fetch(
+			`https://example.com/api/cart?sessionId=${sessionId}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
 			},
-		});
+		);
 
 		expect(response.status).toBe(200);
 		expect(response.headers.get("content-type")).toContain("application/json");
@@ -23,16 +26,19 @@ describe("Cart Controller", () => {
 
 	it("creates a new cart if session doesn't exist", async () => {
 		const newSessionId = "new-test-session";
-		
-		const response = await SELF.fetch(`https://example.com/api/cart?sessionId=${newSessionId}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
+
+		const response = await SELF.fetch(
+			`https://example.com/api/cart?sessionId=${newSessionId}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
 			},
-		});
+		);
 
 		expect(response.status).toBe(200);
-		
+
 		const data = await response.json();
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
@@ -47,7 +53,7 @@ describe("Cart Controller", () => {
 		});
 
 		expect(response.status).toBe(200);
-		
+
 		const data = await response.json();
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
