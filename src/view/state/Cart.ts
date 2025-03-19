@@ -68,7 +68,6 @@ export function useCartProvider(): CartContextType {
 		refresh();
 	}, [sessionId]);
 
-
 	// 計算購物車總數量
 	const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
