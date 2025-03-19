@@ -24,7 +24,10 @@ export class CartTool {
 							total: item.total,
 						})),
 						totalItems: this.cart.items.length,
-						totalAmount: this.cart.items.reduce((sum, item) => sum + item.total, 0),
+						totalAmount: this.cart.items.reduce(
+							(sum, item) => sum + item.total,
+							0,
+						),
 					};
 				},
 			}),
@@ -50,7 +53,9 @@ export class CartTool {
 					quantity: z.number().int().positive().describe("The new quantity"),
 				}),
 				execute: async ({ name, quantity }) => {
-					const existingItem = this.cart.items.find((item) => item.name === name);
+					const existingItem = this.cart.items.find(
+						(item) => item.name === name,
+					);
 					if (!existingItem) {
 						return {
 							success: false,
@@ -71,7 +76,9 @@ export class CartTool {
 					name: z.string().describe("The name of the product"),
 				}),
 				execute: async ({ name }) => {
-					const existingItem = this.cart.items.find((item) => item.name === name);
+					const existingItem = this.cart.items.find(
+						(item) => item.name === name,
+					);
 					if (!existingItem) {
 						return {
 							success: false,
