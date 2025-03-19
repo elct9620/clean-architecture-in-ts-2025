@@ -1,5 +1,5 @@
 import { FC } from "hono/jsx/dom";
-import { CartItem, CartItemProps } from "./CartItem";
+import { CartItem } from "./CartItem";
 
 interface CartItemData {
 	id: string;

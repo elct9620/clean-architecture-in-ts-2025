@@ -21,25 +21,21 @@ export const CartItem: FC<CartItemProps> = ({
 }) => {
 	return (
 		<div className="flex border-b border-gray-100 pb-4">
-			<img
-				src={image}
-				alt={name}
-				className="w-20 h-20 object-cover rounded"
-			/>
+			<img src={image} alt={name} className="w-20 h-20 object-cover rounded" />
 			<div className="ml-3 flex-1">
 				<h3 className="font-medium">{name}</h3>
 				<p className="text-gray-500">
 					NT$ {price.toLocaleString()} x {quantity}
 				</p>
 				<div className="flex items-center mt-2">
-					<button 
+					<button
 						className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
 						onClick={() => onDecrement?.(id)}
 					>
 						-
 					</button>
 					<span className="mx-2">{quantity}</span>
-					<button 
+					<button
 						className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
 						onClick={() => onIncrement?.(id)}
 					>
