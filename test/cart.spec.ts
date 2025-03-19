@@ -1,6 +1,8 @@
 import { SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 
+import { Cart } from "@api/cart";
+
 describe("Cart Controller", () => {
 	const sessionId = "test-session";
 
@@ -19,7 +21,7 @@ describe("Cart Controller", () => {
 		expect(response.status).toBe(200);
 		expect(response.headers.get("content-type")).toContain("application/json");
 
-		const data = await response.json();
+		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
 	});
@@ -39,7 +41,7 @@ describe("Cart Controller", () => {
 
 		expect(response.status).toBe(200);
 
-		const data = await response.json();
+		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
 	});
@@ -54,7 +56,7 @@ describe("Cart Controller", () => {
 
 		expect(response.status).toBe(200);
 
-		const data = await response.json();
+		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
 		expect(data.items.length).toBeGreaterThan(0); // 預設購物車應該有項目
