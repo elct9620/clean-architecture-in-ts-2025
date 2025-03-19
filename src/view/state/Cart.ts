@@ -1,5 +1,5 @@
+import { CartItem as ApiCartItem, getCart } from "@api/cart";
 import { createContext, useContext, useEffect, useState } from "hono/jsx/dom";
-import { getCart, CartItem as ApiCartItem } from "@api/cart";
 import { useSession } from "./session";
 
 export interface CartItem {
@@ -50,17 +50,19 @@ export function useCartProvider(): CartContextType {
 		setLoading(true);
 		try {
 			const cartData = await getCart(sessionId);
-			
+
 			// 將 API 返回的購物車項目轉換為本地格式
 			// 注意：API 返回的項目可能沒有 id 和 image，這裡我們使用名稱作為 id，並使用預設圖片
-			const convertedItems: CartItem[] = cartData.items.map((item: ApiCartItem) => ({
-				id: item.name, // 使用名稱作為 ID
-				name: item.name,
-				price: item.price,
-				quantity: item.quantity,
-				image: "/placeholder.jpg", // 使用預設圖片
-			}));
-			
+			const convertedItems: CartItem[] = cartData.items.map(
+				(item: ApiCartItem) => ({
+					id: item.name, // 使用名稱作為 ID
+					name: item.name,
+					price: item.price,
+					quantity: item.quantity,
+					image: "/placeholder.jpg", // 使用預設圖片
+				}),
+			);
+
 			setItems(convertedItems);
 		} catch (error) {
 			console.error("Failed to load cart:", error);
