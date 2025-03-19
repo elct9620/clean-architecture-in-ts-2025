@@ -21,5 +21,5 @@ export async function getCart(sessionId: string): Promise<Cart> {
 		},
 	});
 
-	return await res.json() as Cart;
+	return (await res.json()) as Cart;
 }
