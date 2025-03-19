@@ -23,9 +23,6 @@ export const CartItem: FC<CartItemProps> = ({
 				<p className="text-gray-500">
 					NT$ {price.toLocaleString()} x {quantity}
 				</p>
-				<div className="mt-2">
-					<span>數量: {quantity}</span>
-				</div>
 			</div>
 		</div>
 	);
