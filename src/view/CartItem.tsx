@@ -6,8 +6,6 @@ export interface CartItemProps {
 	price: number;
 	quantity: number;
 	image: string;
-	onIncrement?: (id: string) => void;
-	onDecrement?: (id: string) => void;
 }
 
 export const CartItem: FC<CartItemProps> = ({
@@ -16,8 +14,6 @@ export const CartItem: FC<CartItemProps> = ({
 	price,
 	quantity,
 	image,
-	onIncrement,
-	onDecrement,
 }) => {
 	return (
 		<div className="flex border-b border-gray-100 pb-4">
@@ -27,20 +23,8 @@ export const CartItem: FC<CartItemProps> = ({
 				<p className="text-gray-500">
 					NT$ {price.toLocaleString()} x {quantity}
 				</p>
-				<div className="flex items-center mt-2">
-					<button
-						className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
-						onClick={() => onDecrement?.(id)}
-					>
-						-
-					</button>
-					<span className="mx-2">{quantity}</span>
-					<button
-						className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
-						onClick={() => onIncrement?.(id)}
-					>
-						+
-					</button>
+				<div className="mt-2">
+					<span>數量: {quantity}</span>
 				</div>
 			</div>
 		</div>

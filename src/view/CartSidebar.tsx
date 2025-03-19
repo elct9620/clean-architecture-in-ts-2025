@@ -54,8 +54,6 @@ export const CartSidebar: FC = () => {
 						price={item.price}
 						quantity={item.quantity}
 						image={item.image}
-						onIncrement={(id) => console.log(`增加 ${id} 的數量`)}
-						onDecrement={(id) => console.log(`減少 ${id} 的數量`)}
 					/>
 				))}
 			</div>
@@ -73,9 +71,9 @@ export const CartSidebar: FC = () => {
 					<span>總計</span>
 					<span>NT$ {totalPrice.toLocaleString()}</span>
 				</div>
-				<button className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600">
-					結帳
-				</button>
+				<div className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium text-center">
+					購物車總覽
+				</div>
 			</div>
 		</div>
 	);
