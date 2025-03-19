@@ -47,6 +47,7 @@ app.get("/", (c) =>
 	),
 );
 app.route("/api/chat", ChatController);
+app.route("/api/cart", (await import("@controller/CartController")).default);
 
 export default {
 	fetch: app.fetch,
