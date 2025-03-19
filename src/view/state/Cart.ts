@@ -41,7 +41,7 @@ export function useCartProvider(): CartContextType {
 		setItems((currentItems) => {
 			// 檢查商品是否已存在於購物車
 			const existingItemIndex = currentItems.findIndex(
-				(item) => item.id === newItem.id
+				(item) => item.id === newItem.id,
 			);
 
 			if (existingItemIndex >= 0) {
@@ -62,15 +62,13 @@ export function useCartProvider(): CartContextType {
 	const updateQuantity = (id: string, quantity: number) => {
 		setItems((currentItems) =>
 			currentItems.map((item) =>
-				item.id === id ? { ...item, quantity } : item
-			)
+				item.id === id ? { ...item, quantity } : item,
+			),
 		);
 	};
 
 	const removeItem = (id: string) => {
-		setItems((currentItems) =>
-			currentItems.filter((item) => item.id !== id)
-		);
+		setItems((currentItems) => currentItems.filter((item) => item.id !== id));
 	};
 
 	const clearCart = () => {
@@ -83,7 +81,7 @@ export function useCartProvider(): CartContextType {
 	// 計算購物車總價格
 	const totalPrice = items.reduce(
 		(sum, item) => sum + item.price * item.quantity,
-		0
+		0,
 	);
 
 	return {
