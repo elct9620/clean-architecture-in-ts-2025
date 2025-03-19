@@ -1,6 +1,6 @@
 import { FC } from "hono/jsx/dom";
 import { CartItem } from "./CartItem";
-import { useCart } from "./state/Cart";
+import { useCart } from "./state/cart";
 
 export const CartSidebar: FC = () => {
 	const { items, totalItems, totalPrice } = useCart();
