@@ -59,7 +59,7 @@ export function useCartProvider(): CartContextType {
 					name: item.name,
 					price: item.price,
 					quantity: item.quantity,
-					image: "/placeholder.jpg", // 使用預設圖片
+					image: "https://placehold.co/80x80", // 使用預設圖片
 				}),
 			);
 
