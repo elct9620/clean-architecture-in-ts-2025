@@ -71,9 +71,6 @@ export const CartSidebar: FC = () => {
 					<span>總計</span>
 					<span>NT$ {totalPrice.toLocaleString()}</span>
 				</div>
-				<div className="w-full bg-blue-500 text-white py-3 rounded-lg font-medium text-center">
-					購物車總覽
-				</div>
 			</div>
 		</div>
 	);
