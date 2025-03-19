@@ -1,6 +1,7 @@
 import { FC } from "hono/jsx/dom";
+import { CartItem, CartItemProps } from "./CartItem";
 
-interface CartItem {
+interface CartItemData {
 	id: string;
 	name: string;
 	price: number;
@@ -10,7 +11,7 @@ interface CartItem {
 
 export const CartSidebar: FC = () => {
 	// 模擬購物車數據
-	const cartItems: CartItem[] = [
+	const cartItems: CartItemData[] = [
 		{
 			id: "1",
 			name: "無線藍牙耳機",
@@ -46,28 +47,16 @@ export const CartSidebar: FC = () => {
 
 			<div className="flex-1 overflow-y-auto space-y-4">
 				{cartItems.map((item) => (
-					<div key={item.id} className="flex border-b border-gray-100 pb-4">
-						<img
-							src={item.image}
-							alt={item.name}
-							className="w-20 h-20 object-cover rounded"
-						/>
-						<div className="ml-3 flex-1">
-							<h3 className="font-medium">{item.name}</h3>
-							<p className="text-gray-500">
-								NT$ {item.price.toLocaleString()} x {item.quantity}
-							</p>
-							<div className="flex items-center mt-2">
-								<button className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-									-
-								</button>
-								<span className="mx-2">{item.quantity}</span>
-								<button className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">
-									+
-								</button>
-							</div>
-						</div>
-					</div>
+					<CartItem
+						key={item.id}
+						id={item.id}
+						name={item.name}
+						price={item.price}
+						quantity={item.quantity}
+						image={item.image}
+						onIncrement={(id) => console.log(`增加 ${id} 的數量`)}
+						onDecrement={(id) => console.log(`減少 ${id} 的數量`)}
+					/>
 				))}
 			</div>
 
