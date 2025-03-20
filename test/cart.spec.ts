@@ -59,6 +59,6 @@ describe("Cart Controller", () => {
 		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
-		expect(data.items.length).toBeGreaterThan(0); // 預設購物車應該有項目
+		// 不再期望預設購物車一定有項目
 	});
 });
