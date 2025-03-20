@@ -61,7 +61,7 @@ export class LlmChatAgent implements ChatAgent {
 		const productTool = ProductTool.create(productQuery);
 		const cartTools = createCartTools(cart);
 
-		const { textStream } = await streamText({
+		const { textStream, toolCalls, toolResults } = await streamText({
 			model: this.model,
 			system,
 			messages: messages.map((message) => ({
@@ -78,7 +78,5 @@ export class LlmChatAgent implements ChatAgent {
 		for await (const chunk of textStream) {
 			yield chunk;
 		}
-
-		console.log(cart);
 	}
 }

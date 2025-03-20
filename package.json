@@ -14,6 +14,7 @@
 		"prepare": "husky"
 	},
 	"devDependencies": {
+		"@ai-sdk/provider": "^1.0.12",
 		"@cloudflare/vitest-pool-workers": "^0.7.1",
 		"@cloudflare/workers-types": "^4.20250214.0",
 		"@commitlint/cli": "^19.7.1",

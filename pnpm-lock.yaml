@@ -36,6 +36,9 @@ importers:
         specifier: ^3.24.2
         version: 3.24.2
     devDependencies:
+      '@ai-sdk/provider':
+        specifier: ^1.0.12
+        version: 1.0.12
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.7.1
         version: 0.7.1(@cloudflare/workers-types@4.20250214.0)(@vitest/runner@3.0.6)(@vitest/snapshot@3.0.6)(vitest@2.1.9(@types/node@22.13.5)(lightningcss@1.29.2))
@@ -95,6 +98,10 @@ packages:
     peerDependenciesMeta:
       zod:
         optional: true
+
+  '@ai-sdk/provider@1.0.12':
+    resolution: {integrity: sha512-88Uu1zJIE1UUOVJWfE2ybJXgiH8JJ97QY9fbmplErEbfa/k/1kF+tWMVAAJolF2aOGmazQGyQLhv4I9CCuVACw==}
+    engines: {node: '>=18'}
 
   '@ai-sdk/provider@1.0.8':
     resolution: {integrity: sha512-f9jSYwKMdXvm44Dmab1vUBnfCDSFfI5rOtvV1W9oKB7WYHR5dGvCC6x68Mk3NUfrdmNoMVHGoh6JT9HCVMlMow==}
@@ -1987,6 +1994,10 @@ snapshots:
       secure-json-parse: 2.7.0
     optionalDependencies:
       zod: 3.24.2
+
+  '@ai-sdk/provider@1.0.12':
+    dependencies:
+      json-schema: 0.4.0
 
   '@ai-sdk/provider@1.0.8':
     dependencies:

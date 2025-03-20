@@ -7,8 +7,6 @@ import { simulateReadableStream } from "ai";
 import { LlmModel } from "../src/container";
 import "../src/index";
 
-const IncomingRequest = Request<unknown, IncomingRequestCfProperties>;
-
 describe("Chat Controller", () => {
 	const payload = {
 		sessionId: "test-session",
