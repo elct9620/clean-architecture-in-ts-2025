@@ -376,7 +376,9 @@ describe("Cart Controller", () => {
 			});
 
 			expect(chatResponse.status).toBe(200);
-			expect(chatResponse.headers.get("content-type")).toBe("text/event-stream");
+			expect(chatResponse.headers.get("content-type")).toBe(
+				"text/event-stream",
+			);
 
 			// 讀取 SSE 流
 			const reader = chatResponse.body?.getReader();
@@ -396,7 +398,7 @@ describe("Cart Controller", () => {
 
 			// 驗證 SSE 事件包含預期的消息
 			expect(chunks).toContain("event: message");
-			
+
 			// 等待一小段時間，確保購物車已更新
 			await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -412,13 +414,13 @@ describe("Cart Controller", () => {
 			);
 
 			expect(cartResponse.status).toBe(200);
-			
+
 			// 驗證購物車數據
 			const cartData = (await cartResponse.json()) as Cart;
 			expect(cartData.items.length).toBeGreaterThan(0);
-			
+
 			// 找到測試商品
-			const testItem = cartData.items.find(item => item.name === "測試商品");
+			const testItem = cartData.items.find((item) => item.name === "測試商品");
 			expect(testItem).toBeDefined();
 			if (testItem) {
 				expect(testItem.price).toBe(100);
