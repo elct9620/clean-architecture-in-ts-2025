@@ -15,7 +15,7 @@ const schema = z.object({
 
 // 鏈式路由定義
 const routes = app.get("/", zValidator("query", schema), async (c) => {
-	const { sessionId = "default-session" } = c.req.valid("query");
+	const { sessionId = "" } = c.req.valid("query");
 
 	const carts = container.resolve(KvCartRepository);
 	const presenter = new JsonCartPresenter();
@@ -23,7 +23,7 @@ const routes = app.get("/", zValidator("query", schema), async (c) => {
 
 	await getCart.execute(sessionId);
 
-	return c.json(presenter.render());
+	return c.json(await presenter.render());
 });
 
 export default routes;
