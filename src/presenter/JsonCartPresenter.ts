@@ -8,7 +8,7 @@ export class JsonCartPresenter implements CartPresenter {
 	async render(cart: Cart): Promise<void> {
 		// 將 Cart 實體轉換為適合 JSON 響應的格式
 		const response = {
-			items: cart.items.map(item => ({
+			items: cart.items.map((item) => ({
 				name: item.name,
 				price: item.price,
 				quantity: item.quantity,

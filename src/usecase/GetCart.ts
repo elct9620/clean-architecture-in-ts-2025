@@ -1,4 +1,3 @@
-import { Cart } from "@/entity/Cart";
 import { CartPresenter, CartRepository } from "./interface";
 
 export class GetCart {
