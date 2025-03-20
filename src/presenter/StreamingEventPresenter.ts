@@ -10,4 +10,11 @@ export class HonoServerEventPresenter implements StreamingEventPresenter {
 			data: JSON.stringify({ content: chunk }),
 		});
 	}
+
+	async refreshCart(): Promise<void> {
+		await this.stream.writeSSE({
+			event: "refresh",
+			data: JSON.stringify({}),
+		});
+	}
 }

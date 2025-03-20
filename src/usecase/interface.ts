@@ -19,6 +19,7 @@ export interface ProductQuery {
 
 export interface StreamingEventPresenter {
 	messagePartial(chunk: string): Promise<void>;
+	refreshCart(): Promise<void>;
 }
 
 export interface CartPresenter {

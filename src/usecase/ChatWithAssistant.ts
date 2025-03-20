@@ -36,5 +36,9 @@ export class ChatWithAssistant {
 
 		await this.conversations.save(conversation);
 		await this.carts.save(cart);
+
+		if (cart.isDirty) {
+			await this.presenter.refreshCart();
+		}
 	}
 }
