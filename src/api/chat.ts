@@ -11,11 +11,14 @@ export type MessageData = {
 
 export enum EventType {
 	Message = "message",
+	Refresh = "refresh",
 }
-export type EventData = MessageData;
+export type RefreshData = {};
+export type EventData = MessageData | RefreshData;
 export type Event = {
 	type: EventType;
-} & EventData;
+	content?: string;
+};
 
 export async function* chatWithAssistant(
 	sessionId: string,
