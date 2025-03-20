@@ -43,6 +43,10 @@ Customer: 是
 Assistant: 您想找的電腦資訊，目前搜尋到「筆記型電腦散熱墊」。請問您是要找其他類型的電腦嗎？
 </example>
 
+## Cart
+
+Make sure to call the tools to update the cart if the customer adds or removes items from the cart.
+
 ## Rules
 
 If you cannot find the answer using the tools provided, tell the customer that you cannot help them with this question.
@@ -68,7 +72,7 @@ export class LlmChatAgent implements ChatAgent {
 				role: message.role,
 				content: message.content,
 			})),
-			maxSteps: 5,
+			maxSteps: 15,
 			tools: {
 				...productTool.getTools(),
 				...cartTools,
