@@ -360,5 +360,70 @@ describe("Cart Controller", () => {
 			expect(cartItems.items[0].name).toBe("測試商品");
 			expect(cartItems.items[0].quantity).toBe(2);
 		});
+
+		it("integrates with chat API and updates cart via HTTP requests", async () => {
+			// 發送聊天請求到聊天 API
+			const chatResponse = await SELF.fetch("https://example.com/api/chat", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Accept: "text/event-stream",
+				},
+				body: JSON.stringify({
+					sessionId,
+					content: "我想添加一個測試商品到購物車，價格 100 元，數量 2 個",
+				}),
+			});
+
+			expect(chatResponse.status).toBe(200);
+			expect(chatResponse.headers.get("content-type")).toBe("text/event-stream");
+
+			// 讀取 SSE 流
+			const reader = chatResponse.body?.getReader();
+			const decoder = new TextDecoder();
+
+			if (!reader) {
+				throw new Error("No reader available");
+			}
+
+			// 讀取所有 SSE 事件
+			let chunks = "";
+			while (true) {
+				const { value, done } = await reader.read();
+				if (done) break;
+				chunks += decoder.decode(value);
+			}
+
+			// 驗證 SSE 事件包含預期的消息
+			expect(chunks).toContain("event: message");
+			
+			// 等待一小段時間，確保購物車已更新
+			await new Promise((resolve) => setTimeout(resolve, 100));
+
+			// 通過 API 獲取購物車數據
+			const cartResponse = await SELF.fetch(
+				`https://example.com/api/cart?sessionId=${sessionId}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				},
+			);
+
+			expect(cartResponse.status).toBe(200);
+			
+			// 驗證購物車數據
+			const cartData = (await cartResponse.json()) as Cart;
+			expect(cartData.items.length).toBeGreaterThan(0);
+			
+			// 找到測試商品
+			const testItem = cartData.items.find(item => item.name === "測試商品");
+			expect(testItem).toBeDefined();
+			if (testItem) {
+				expect(testItem.price).toBe(100);
+				expect(testItem.quantity).toBe(2);
+			}
+		});
 	});
 });
