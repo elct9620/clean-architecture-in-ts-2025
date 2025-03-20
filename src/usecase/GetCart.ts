@@ -1,5 +1,5 @@
 import { Cart, CartItem } from "@/entity/Cart";
-import { CartRepository, CartPresenter } from "./interface";
+import { CartPresenter, CartRepository } from "./interface";
 
 // 定義輸出數據結構
 export interface CartItemDto {
@@ -15,7 +15,7 @@ export interface CartDto {
 export class GetCart {
 	constructor(
 		private readonly carts: CartRepository,
-		private readonly presenter: CartPresenter
+		private readonly presenter: CartPresenter,
 	) {}
 
 	async execute(sessionId: string): Promise<void> {
