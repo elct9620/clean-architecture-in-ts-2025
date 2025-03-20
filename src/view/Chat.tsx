@@ -1,7 +1,6 @@
 import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 
-import { chatWithAssistant } from "@api/chat";
-import { EventType } from "@api/chat";
+import { chatWithAssistant, EventType } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
 import { useCart } from "./state/cart";
