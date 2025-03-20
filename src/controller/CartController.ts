@@ -1,36 +1,29 @@
+import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { z } from "zod";
 
-// 模擬購物車數據
-const mockCarts: Record<string, any> = {
-	// 預設一些模擬數據
-	"default-session": {
-		items: [
-			{
-				name: "無線藍牙耳機",
-				price: 1299,
-				quantity: 1,
-			},
-			{
-				name: "智慧手錶",
-				price: 2499,
-				quantity: 1,
-			},
-		],
-	},
-};
+import { JsonCartPresenter } from "@/presenter/JsonCartPresenter";
+import { KvCartRepository } from "@/repository/KvCartRepository";
+import { GetCart } from "@/usecase/GetCart";
+import { container } from "tsyringe-neo";
 
 const app = new Hono<{ Bindings: Env }>();
 
+const schema = z.object({
+	sessionId: z.string().optional(),
+});
+
 // 鏈式路由定義
-const routes = app.get("/", async (c) => {
-	const sessionId = c.req.query("sessionId") || "default-session";
-
-	// 如果該 session 沒有購物車，創建一個空的
-	if (!mockCarts[sessionId]) {
-		mockCarts[sessionId] = { items: [] };
-	}
-
-	return c.json(mockCarts[sessionId]);
+const routes = app.get("/", zValidator("query", schema), async (c) => {
+	const { sessionId = "default-session" } = c.req.valid("query");
+	
+	const carts = container.resolve(KvCartRepository);
+	const presenter = new JsonCartPresenter(c);
+	const getCart = new GetCart(carts, presenter);
+	
+	await getCart.execute(sessionId);
+	
+	return c.body;
 });
 
 export default routes;
