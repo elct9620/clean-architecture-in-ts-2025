@@ -22,7 +22,7 @@ const routes = app.get("/", zValidator("query", schema), async (c) => {
 	const getCart = new GetCart(carts, presenter);
 
 	await getCart.execute(sessionId);
-	
+
 	// 不需要返回 c.body，因為 JsonCartPresenter 已經調用了 c.json() 設置了響應
 	// 這裡直接返回 undefined，Hono 會自動處理
 });
