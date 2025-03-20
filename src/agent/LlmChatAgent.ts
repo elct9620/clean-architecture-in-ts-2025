@@ -78,5 +78,7 @@ export class LlmChatAgent implements ChatAgent {
 		for await (const chunk of textStream) {
 			yield chunk;
 		}
+
+		console.log(cart);
 	}
 }
