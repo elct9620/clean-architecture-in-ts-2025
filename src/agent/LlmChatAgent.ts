@@ -2,7 +2,7 @@ import { type LanguageModel, streamText } from "ai";
 import { inject, injectable } from "tsyringe-neo";
 
 import { createCartTools } from "@/agent/CartTool";
-import { ProductTool } from "@/agent/ProductTool";
+import { createProductTools } from "@/agent/ProductTool";
 import { LlmModel } from "@/container";
 import { Cart } from "@/entity/Cart";
 import { Message } from "@/entity/Conversation";
@@ -62,7 +62,7 @@ export class LlmChatAgent implements ChatAgent {
 		productQuery: ProductQuery,
 		messages: Message[],
 	): AsyncIterable<string> {
-		const productTool = ProductTool.create(productQuery);
+		const productTools = createProductTools(productQuery);
 		const cartTools = createCartTools(cart);
 
 		const { textStream, toolCalls, toolResults } = await streamText({
@@ -74,7 +74,7 @@ export class LlmChatAgent implements ChatAgent {
 			})),
 			maxSteps: 15,
 			tools: {
-				...productTool.getTools(),
+				...productTools,
 				...cartTools,
 			},
 		});

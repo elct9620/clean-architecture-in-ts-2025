@@ -3,41 +3,37 @@ import { z } from "zod";
 
 import { ProductQuery } from "@/usecase/interface";
 
-export class ProductTool {
-	constructor(private readonly productQuery: ProductQuery) {}
+export const createListProductsTool = (productQuery: ProductQuery) =>
+	tool({
+		description: "List all available products",
+		parameters: z.object({}),
+		execute: async ({}) => {
+			return {
+				products: (await productQuery.execute("")).map((p) => ({
+					name: p.name,
+					price: p.price,
+				})),
+			};
+		},
+	});
 
-	static create(productQuery: ProductQuery) {
-		return new ProductTool(productQuery);
-	}
+export const createSearchProductsTool = (productQuery: ProductQuery) =>
+	tool({
+		description: "Search products by name",
+		parameters: z.object({
+			query: z.string().describe("The search query for products"),
+		}),
+		execute: async ({ query }) => {
+			return {
+				products: (await productQuery.execute(query)).map((p) => ({
+					name: p.name,
+					price: p.price,
+				})),
+			};
+		},
+	});
 
-	getTools() {
-		return {
-			listProduct: tool({
-				description: "List products by name",
-				parameters: z.object({}),
-				execute: async ({}) => {
-					return {
-						products: (await this.productQuery.execute("")).map((p) => ({
-							name: p.name,
-							price: p.price,
-						})),
-					};
-				},
-			}),
-			searchProduct: tool({
-				description: "Search products by name",
-				parameters: z.object({
-					query: z.string(),
-				}),
-				execute: async ({ query }) => {
-					return {
-						products: (await this.productQuery.execute(query)).map((p) => ({
-							name: p.name,
-							price: p.price,
-						})),
-					};
-				},
-			}),
-		};
-	}
-}
+export const createProductTools = (productQuery: ProductQuery) => ({
+	listProducts: createListProductsTool(productQuery),
+	searchProducts: createSearchProductsTool(productQuery),
+});
