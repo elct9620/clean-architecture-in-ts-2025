@@ -16,13 +16,13 @@ const schema = z.object({
 // 鏈式路由定義
 const routes = app.get("/", zValidator("query", schema), async (c) => {
 	const { sessionId = "default-session" } = c.req.valid("query");
-	
+
 	const carts = container.resolve(KvCartRepository);
 	const presenter = new JsonCartPresenter(c);
 	const getCart = new GetCart(carts, presenter);
-	
+
 	await getCart.execute(sessionId);
-	
+
 	return c.body;
 });
 
