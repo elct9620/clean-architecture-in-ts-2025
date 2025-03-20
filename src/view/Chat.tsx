@@ -1,8 +1,10 @@
 import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
 
 import { chatWithAssistant } from "@api/chat";
+import { EventType } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
+import { useCart } from "./state/cart";
 import { useSession } from "./state/session";
 import { ActionType, Message, Role } from "./types/Message";
 
@@ -30,18 +32,24 @@ async function doChat(
 	sessionId: string,
 	message: string,
 	dispatcher: (type: ActionType, payload: any) => void,
+	refreshCart: () => Promise<void>,
 ) {
 	dispatcher(ActionType.AddUserMessage, message);
 	dispatcher(ActionType.AddAssistantMessage, "");
 
 	const events = chatWithAssistant(sessionId, message);
 	for await (const event of events) {
-		dispatcher(ActionType.UpdateLastMessage, event.content);
+		if (event.type === EventType.Message && event.content) {
+			dispatcher(ActionType.UpdateLastMessage, event.content);
+		} else if (event.type === EventType.Refresh) {
+			await refreshCart();
+		}
 	}
 }
 
 export const Chat: FC = () => {
 	const sessionId = useSession();
+	const { refresh: refreshCart } = useCart();
 	const [messages, dispatch] = useReducer(messagesReducer, []);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -56,12 +64,12 @@ export const Chat: FC = () => {
 		async (message: string) => {
 			setIsLoading(true);
 			try {
-				await doChat(sessionId, message, handleMessageDispatch);
+				await doChat(sessionId, message, handleMessageDispatch, refreshCart);
 			} finally {
 				setIsLoading(false);
 			}
 		},
-		[sessionId, handleMessageDispatch],
+		[sessionId, handleMessageDispatch, refreshCart],
 	);
 
 	return (
