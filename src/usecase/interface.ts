@@ -21,6 +21,10 @@ export interface StreamingEventPresenter {
 	messagePartial(chunk: string): Promise<void>;
 }
 
+export interface CartPresenter {
+	setCart(cart: Cart): Promise<void>;
+}
+
 export interface ChatAgent {
 	chat(
 		cart: Cart,
