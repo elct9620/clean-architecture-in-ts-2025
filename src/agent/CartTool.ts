@@ -33,14 +33,14 @@ export const createAddToCartTool = (cart: Cart, productQuery: ProductQuery) =>
 			// 查詢商品以獲取正確的價格
 			const products = await productQuery.execute(name);
 			const product = products.find((p) => p.name === name);
-			
+
 			if (!product) {
 				return {
 					success: false,
 					message: `找不到商品 ${name}`,
 				};
 			}
-			
+
 			cart.addItem(name, product.price, quantity);
 			return {
 				success: true,
