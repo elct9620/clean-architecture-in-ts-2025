@@ -1,6 +1,5 @@
 import { CartItem as ApiCartItem, getCart } from "@api/cart";
 import { createContext, useContext, useEffect, useState } from "hono/jsx/dom";
-import { useSession } from "./session";
 
 export interface CartItem {
 	id: string;
@@ -32,8 +31,7 @@ export function useCart(): CartContextType {
 	return useContext(CartContext);
 }
 
-export function useCartProvider(): CartContextType {
-	const sessionId = useSession();
+export function useCartProvider(sessionId: string): CartContextType {
 	const [items, setItems] = useState<CartItem[]>([]);
 	const [loading, setLoading] = useState(false);
 

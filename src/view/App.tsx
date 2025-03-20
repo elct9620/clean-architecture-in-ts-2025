@@ -8,7 +8,7 @@ import "@view/style.css";
 
 export const App: FC = () => {
 	const sessionId = getOrCreateSessionId();
-	const cartState = useCartProvider();
+	const cartState = useCartProvider(sessionId);
 
 	return (
 		<SessionContext.Provider value={sessionId}>
