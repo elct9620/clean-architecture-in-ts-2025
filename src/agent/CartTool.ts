@@ -2,6 +2,7 @@ import { tool } from "ai";
 import { z } from "zod";
 
 import { Cart } from "@/entity/Cart";
+import { ProductQuery } from "@/usecase/interface";
 
 export const createListCartItemsTool = (cart: Cart) =>
 	tool({
@@ -21,16 +22,26 @@ export const createListCartItemsTool = (cart: Cart) =>
 		},
 	});
 
-export const createAddToCartTool = (cart: Cart) =>
+export const createAddToCartTool = (cart: Cart, productQuery: ProductQuery) =>
 	tool({
 		description: "Add a product to the cart",
 		parameters: z.object({
 			name: z.string().describe("The name of the product"),
-			price: z.number().describe("The price of the product"),
 			quantity: z.number().int().positive().describe("The quantity to add"),
 		}),
-		execute: async ({ name, price, quantity }) => {
-			cart.addItem(name, price, quantity);
+		execute: async ({ name, quantity }) => {
+			// 查詢商品以獲取正確的價格
+			const products = await productQuery.execute(name);
+			const product = products.find((p) => p.name === name);
+			
+			if (!product) {
+				return {
+					success: false,
+					message: `找不到商品 ${name}`,
+				};
+			}
+			
+			cart.addItem(name, product.price, quantity);
 			return {
 				success: true,
 				message: `已將 ${quantity} 個 ${name} 加入購物車`,
@@ -85,9 +96,9 @@ export const createRemoveFromCartTool = (cart: Cart) =>
 		},
 	});
 
-export const createCartTools = (cart: Cart) => ({
+export const createCartTools = (cart: Cart, productQuery: ProductQuery) => ({
 	listCartItems: createListCartItemsTool(cart),
-	addToCart: createAddToCartTool(cart),
+	addToCart: createAddToCartTool(cart, productQuery),
 	updateCartItem: createUpdateCartItemTool(cart),
 	removeFromCart: createRemoveFromCartTool(cart),
 });

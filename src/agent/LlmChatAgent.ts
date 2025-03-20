@@ -63,7 +63,7 @@ export class LlmChatAgent implements ChatAgent {
 		messages: Message[],
 	): AsyncIterable<string> {
 		const productTools = createProductTools(productQuery);
-		const cartTools = createCartTools(cart);
+		const cartTools = createCartTools(cart, productQuery);
 
 		const { textStream, toolCalls, toolResults } = await streamText({
 			model: this.model,
