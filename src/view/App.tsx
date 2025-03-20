@@ -1,6 +1,6 @@
 import { CartSidebar } from "@view/CartSidebar";
 import { Chat } from "@view/Chat";
-import { CartContext, useCartProvider } from "@view/state/Cart";
+import { CartContext, useCartProvider } from "@view/state/cart";
 import { SessionContext, getOrCreateSessionId } from "@view/state/session";
 import { FC } from "hono/jsx/dom";
 
