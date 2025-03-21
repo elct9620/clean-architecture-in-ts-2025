@@ -30,7 +30,7 @@ describe("Cart Controller", () => {
 								toolName: "addToCart",
 								toolCallId: "1234",
 								toolCallType: "function",
-								args: '{ "name": "測試商品", "price": 100, "quantity": 2 }',
+								args: '{ "name": "無線滑鼠", "quantity": 2 }',
 							},
 							{
 								type: "tool-call-delta",
@@ -88,7 +88,7 @@ describe("Cart Controller", () => {
 			},
 			body: JSON.stringify({
 				sessionId: "test-session",
-				content: "我要買 2 個 測試商品",
+				content: "我要買 2 個 無線滑鼠",
 			}),
 		});
 
@@ -116,8 +116,8 @@ describe("Cart Controller", () => {
 
 		const cartData = (await cartResponse.json()) as Cart;
 		expect(cartData.items).toHaveLength(1);
-		expect(cartData.items[0].name).toBe("測試商品");
-		expect(cartData.items[0].price).toBe(100);
+		expect(cartData.items[0].name).toBe("無線滑鼠");
+		expect(cartData.items[0].price).toBe(699);
 		expect(cartData.items[0].quantity).toBe(2);
 	});
 });
