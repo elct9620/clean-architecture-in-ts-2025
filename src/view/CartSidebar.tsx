@@ -63,17 +63,10 @@ export const CartSidebar: FC = () => {
 					<span>運費</span>
 					<span>免費</span>
 				</div>
-				<div className="flex justify-between font-bold mb-6 text-text-primary">
+				<div className="flex justify-between font-bold text-text-primary">
 					<span>總計</span>
 					<span>NT$ {totalPrice.toLocaleString()}</span>
 				</div>
-
-				<button
-					className="w-full py-3 bg-primary text-white rounded-md font-medium hover:bg-opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-					disabled={items.length === 0 || loading}
-				>
-					前往結帳
-				</button>
 			</div>
 		</div>
 	);
