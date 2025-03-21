@@ -55,13 +55,9 @@ export const CartSidebar: FC = () => {
 			</div>
 
 			<div className="border-t border-gray-200 pt-6 mt-4">
-				<div className="flex justify-between mb-3 text-text-secondary">
+				<div className="flex justify-between mb-4 text-text-secondary">
 					<span>小計</span>
 					<span>NT$ {totalPrice.toLocaleString()}</span>
-				</div>
-				<div className="flex justify-between mb-4 text-text-secondary">
-					<span>運費</span>
-					<span>免費</span>
 				</div>
 				<div className="flex justify-between font-bold text-text-primary">
 					<span>總計</span>
