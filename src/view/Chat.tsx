@@ -72,14 +72,14 @@ export const Chat: FC = () => {
 	);
 
 	return (
-		<div className="flex flex-col h-screen bg-gray-100">
-			<div className="bg-white p-2 border-b border-gray-200 text-xs text-gray-500 flex justify-end">
+		<div className="flex flex-col h-screen bg-background font-font-family-sans">
+			<div className="bg-card p-3 border-b border-gray-200 text-xs text-text-secondary flex justify-end">
 				<span>Session ID: {sessionId}</span>
 			</div>
-			<div className="flex-1 overflow-y-auto p-4">
+			<div className="flex-1 overflow-y-auto p-6">
 				<ChatMessage messages={messages} />
 			</div>
-			<div className="border-t border-gray-200 p-4 bg-white">
+			<div className="border-t border-gray-200 p-6 bg-card shadow-md">
 				<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
 			</div>
 		</div>

@@ -20,9 +20,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 	}, [messages, loading]);
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-6">
 			{messages.length === 0 ? (
-				<div className="text-center py-10 text-gray-500">
+				<div className="text-center py-10 text-text-secondary font-font-family-sans">
 					開始與 AI 助手對話吧！
 				</div>
 			) : (
@@ -31,13 +31,13 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 						return (
 							<div
 								key={index}
-								className={`p-3 rounded-lg max-w-[80%] ${
+								className={`p-4 rounded-md max-w-[80%] shadow-md ${
 									msg.role === Role.User
-										? "ml-auto bg-blue-500 text-white"
-										: "bg-white border border-gray-200 shadow-sm"
+										? "ml-auto bg-primary text-card"
+										: "bg-card border border-gray-200"
 								}`}
 							>
-								<div className="whitespace-pre-wrap">
+								<div className="whitespace-pre-wrap font-font-family-sans leading-normal">
 									{msg.role === Role.Assistant && msg.content === "" ? (
 										<LoadingAnimation />
 									) : (

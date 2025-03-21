@@ -23,22 +23,22 @@ export const ChatInput: FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
 	);
 
 	return (
-		<form onSubmit={handleSubmit} className="flex gap-2">
+		<form onSubmit={handleSubmit} className="flex gap-4">
 			<input
 				type="text"
 				value={inputValue}
 				onInput={(e) => setInputValue((e.target as HTMLInputElement).value)}
 				placeholder="輸入訊息..."
 				disabled={isLoading}
-				className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+				className="flex-1 px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-text-primary font-font-family-sans"
 			/>
 			<button
 				type="submit"
 				disabled={isLoading}
-				className={`px-4 py-2 rounded-full font-medium ${
+				className={`px-6 py-3 rounded-md font-font-weight-medium shadow-md ${
 					isLoading
-						? "bg-gray-300 text-gray-500"
-						: "bg-blue-500 text-white hover:bg-blue-600"
+						? "bg-secondary text-card"
+						: "bg-primary text-card hover:bg-opacity-90 transition-colors"
 				}`}
 			>
 				{isLoading ? "發送中..." : "發送"}
