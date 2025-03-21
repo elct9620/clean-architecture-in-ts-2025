@@ -25,19 +25,10 @@ export const CartItem: FC<CartItemProps> = ({
 				<p className="text-text-secondary text-sm mt-1">
 					NT$ {price.toLocaleString()} x {quantity}
 				</p>
-				<div className="mt-2 flex justify-between items-center">
+				<div className="mt-2">
 					<span className="font-medium text-primary">
 						NT$ {(price * quantity).toLocaleString()}
 					</span>
-					<div className="flex items-center space-x-1">
-						<button className="w-6 h-6 flex items-center justify-center rounded-full bg-background text-text-primary hover:bg-gray-200 transition-colors">
-							-
-						</button>
-						<span className="mx-1 text-sm">{quantity}</span>
-						<button className="w-6 h-6 flex items-center justify-center rounded-full bg-background text-text-primary hover:bg-gray-200 transition-colors">
-							+
-						</button>
-					</div>
 				</div>
 			</div>
 		</div>
