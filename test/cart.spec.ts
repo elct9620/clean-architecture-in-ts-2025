@@ -32,7 +32,7 @@ describe("Cart Controller", () => {
 		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
-		
+
 		return data;
 	}
 
@@ -67,30 +67,36 @@ describe("Cart Controller", () => {
 			if (done) break;
 			chunks += new TextDecoder().decode(value);
 		}
-		
+
 		return chunks;
 	}
 
-	async function thenCartContainsItem(sessionId: string, expectedItem: { name: string, price: number, quantity: number }) {
+	async function thenCartContainsItem(
+		sessionId: string,
+		expectedItem: { name: string; price: number; quantity: number },
+	) {
 		const cartResponse = await whenGetCart(sessionId);
 		const cartData = await thenCartResponseIsValid(cartResponse);
-		
+
 		expect(cartData.items).toHaveLength(1);
 		expect(cartData.items[0].name).toBe(expectedItem.name);
 		expect(cartData.items[0].price).toBe(expectedItem.price);
 		expect(cartData.items[0].quantity).toBe(expectedItem.quantity);
-		
+
 		return cartData;
 	}
 
 	it("adds items to cart", async () => {
 		const sessionId = "test-session";
-		const response = await whenSendChatMessage(sessionId, "我要買 2 個 無線滑鼠");
+		const response = await whenSendChatMessage(
+			sessionId,
+			"我要買 2 個 無線滑鼠",
+		);
 		await thenReadStreamResponse(response);
-		await thenCartContainsItem(sessionId, { 
-			name: "無線滑鼠", 
-			price: 699, 
-			quantity: 2 
+		await thenCartContainsItem(sessionId, {
+			name: "無線滑鼠",
+			price: 699,
+			quantity: 2,
 		});
 	});
 });
