@@ -38,7 +38,9 @@ export async function whenSendChatMessage(
 
 export async function thenCartResponseIsValid(ctx: TestContext) {
 	expect(ctx.response.status).toBe(200);
-	expect(ctx.response.headers.get("content-type")).toContain("application/json");
+	expect(ctx.response.headers.get("content-type")).toContain(
+		"application/json",
+	);
 
 	const data = (await ctx.response.json()) as Cart;
 	expect(data).toHaveProperty("items");
