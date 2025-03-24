@@ -83,9 +83,9 @@ export const Chat: FC = () => {
 				// 將歷史消息添加到狀態中
 				if (conversation.messages.length > 0) {
 					// 直接設置所有消息，而不是逐個添加
-					dispatch({ 
-						type: ActionType.SetMessages, 
-						payload: conversation.messages 
+					dispatch({
+						type: ActionType.SetMessages,
+						payload: conversation.messages,
 					});
 				}
 			} catch (error) {
