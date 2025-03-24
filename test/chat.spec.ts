@@ -1,10 +1,7 @@
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 
 import "../src/index";
-import { 
-	thenStreamEventHave, 
-	whenSendChatMessage 
-} from "./steps/http";
+import { thenStreamEventHave, whenSendChatMessage } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
 describe("Chat Controller", () => {
@@ -27,11 +24,11 @@ describe("Chat Controller", () => {
 	it("responds with SSE stream", async () => {
 		const sessionId = "test-session";
 		const response = await whenSendChatMessage(sessionId, "Hello");
-		
+
 		await thenStreamEventHave(response, [
 			"event: message",
 			'data: {"content":"Hello"}',
-			'data: {"content":" World"}'
+			'data: {"content":" World"}',
 		]);
 	});
 });

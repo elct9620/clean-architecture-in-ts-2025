@@ -77,15 +77,18 @@ export async function whenStreamResponseCompleted(response: Response) {
 	return chunks;
 }
 
-export async function thenStreamEventHave(response: Response, expectedContents: string[]) {
+export async function thenStreamEventHave(
+	response: Response,
+	expectedContents: string[],
+) {
 	expect(response.headers.get("content-type")).toBe("text/event-stream");
-	
+
 	const chunks = await whenStreamResponseCompleted(response);
-	
+
 	for (const content of expectedContents) {
 		expect(chunks).toContain(content);
 	}
-	
+
 	return chunks;
 }
 
