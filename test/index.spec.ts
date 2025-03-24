@@ -1,19 +1,20 @@
 import { SELF } from "cloudflare:test";
-import { describe, expect, it } from "vitest";
+import { describe, it } from "vitest";
+import { thenHtmlContains, whenGetRoot } from "./steps/http";
 
 describe("GET /", () => {
-	it("should render HTML with root element", async () => {
-		const response = await SELF.fetch("https://example.com");
-		const html = await response.text();
-
-		expect(html).toContain('<div id="root"></div>');
+	it("should render HTML with root element", async (ctx) => {
+		await whenGetRoot(ctx);
+		await thenHtmlContains(ctx, '<div id="root"></div>');
 	});
 
-	it("should render script tags", async () => {
+	it("should render script tags", async (ctx) => {
 		const response = await SELF.fetch("https://example.com/");
 		const html = await response.text();
 
-		expect(html).toContain(
+		await whenGetRoot(ctx);
+		await thenHtmlContains(
+			ctx,
 			'<script type="module" src="/src/client.tsx"></script>',
 		);
 	});
