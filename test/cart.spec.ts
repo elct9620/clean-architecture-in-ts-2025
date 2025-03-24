@@ -9,7 +9,7 @@ import {
 } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
-describe("Cart Controller", () => {
+describe("GET /api/cart", () => {
 	beforeEach((ctx) => {
 		givenLanguageModel(ctx, [
 			{
