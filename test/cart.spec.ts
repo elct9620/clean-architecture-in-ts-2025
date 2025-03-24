@@ -2,11 +2,32 @@ import { SELF } from "cloudflare:test";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Cart } from "@api/cart";
-import { givenAddToCartLanguageModel } from "./steps/llm";
+import { givenLanguageModel } from "./steps/llm";
 
 describe("Cart Controller", () => {
 	beforeEach((ctx) => {
-		givenAddToCartLanguageModel(ctx);
+		givenLanguageModel(ctx, [
+			{
+				type: "tool-call",
+				toolName: "addToCart",
+				toolCallId: "1234",
+				toolCallType: "function",
+				args: '{ "name": "無線滑鼠", "quantity": 2 }',
+			},
+			{
+				type: "tool-call-delta",
+				toolName: "addToCart",
+				toolCallId: "1234",
+				toolCallType: "function",
+				argsTextDelta: "{}",
+			},
+			{ type: "text-delta", textDelta: "已將商品加入購物車" },
+			{
+				type: "finish",
+				finishReason: "stop",
+				usage: { completionTokens: 0, promptTokens: 0 },
+			},
+		]);
 	});
 
 	afterEach(() => {
