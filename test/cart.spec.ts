@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 
-import { 
-	thenCartContainsItem, 
-	thenCartResponseIsValid, 
-	thenReadStreamResponse, 
-	whenGetCart, 
-	whenSendChatMessage 
+import {
+	thenCartContainsItem,
+	thenCartResponseIsValid,
+	thenReadStreamResponse,
+	whenGetCart,
+	whenSendChatMessage,
 } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
@@ -39,12 +39,10 @@ describe("Cart Controller", () => {
 		vi.restoreAllMocks();
 	});
 
-
 	it("responds with cart data", async (ctx) => {
 		const response = await whenGetCart(ctx, "mock-id");
 		await thenCartResponseIsValid(response);
 	});
-
 
 	it("adds items to cart", async (ctx) => {
 		const sessionId = "test-session";

@@ -1,6 +1,6 @@
+import { Cart } from "@api/cart";
 import { SELF } from "cloudflare:test";
 import { TestContext, expect } from "vitest";
-import { Cart } from "@api/cart";
 
 export async function whenGetRoot(ctx: TestContext) {
 	ctx.response = await SELF.fetch("https://example.com");
