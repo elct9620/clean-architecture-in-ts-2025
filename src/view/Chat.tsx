@@ -22,6 +22,8 @@ function messagesReducer(
 					? { ...msg, content: msg.content + action.payload }
 					: msg,
 			);
+		case ActionType.SetMessages:
+			return action.payload;
 		default:
 			return state;
 	}
@@ -80,14 +82,10 @@ export const Chat: FC = () => {
 
 				// 將歷史消息添加到狀態中
 				if (conversation.messages.length > 0) {
-					conversation.messages.forEach((msg) => {
-						dispatch({
-							type:
-								msg.role === Role.User
-									? ActionType.AddUserMessage
-									: ActionType.AddAssistantMessage,
-							payload: msg.content,
-						});
+					// 直接設置所有消息，而不是逐個添加
+					dispatch({ 
+						type: ActionType.SetMessages, 
+						payload: conversation.messages 
 					});
 				}
 			} catch (error) {
