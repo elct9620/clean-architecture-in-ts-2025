@@ -8,7 +8,8 @@ import {
 	whenSendChatMessage,
 	whenStreamResponseCompleted,
 } from "./steps/http";
-import { givenConversation, givenLanguageModel } from "./steps/llm";
+import { givenLanguageModel } from "./steps/llm";
+import { givenConversation } from "./steps/cloudflare";
 
 describe("Chat Controller", () => {
 	beforeEach((ctx) => {
