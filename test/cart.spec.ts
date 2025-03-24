@@ -1,8 +1,12 @@
-import { SELF } from "cloudflare:test";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, it, vi } from "vitest";
 
-import { Cart } from "@api/cart";
-import { whenGetCart } from "./steps/http";
+import { 
+	thenCartContainsItem, 
+	thenCartResponseIsValid, 
+	thenReadStreamResponse, 
+	whenGetCart, 
+	whenSendChatMessage 
+} from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
 describe("Cart Controller", () => {
@@ -35,67 +39,12 @@ describe("Cart Controller", () => {
 		vi.restoreAllMocks();
 	});
 
-	async function thenCartResponseIsValid(response: Response) {
-		expect(response.status).toBe(200);
-		expect(response.headers.get("content-type")).toContain("application/json");
-
-		const data = (await response.json()) as Cart;
-		expect(data).toHaveProperty("items");
-		expect(Array.isArray(data.items)).toBe(true);
-
-		return data;
-	}
 
 	it("responds with cart data", async (ctx) => {
 		const response = await whenGetCart(ctx, "mock-id");
 		await thenCartResponseIsValid(response);
 	});
 
-	async function whenSendChatMessage(sessionId: string, content: string) {
-		return await SELF.fetch("https://example.com/api/chat", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Accept: "text/event-stream",
-			},
-			body: JSON.stringify({
-				sessionId,
-				content,
-			}),
-		});
-	}
-
-	async function thenReadStreamResponse(response: Response) {
-		const reader = response.body?.getReader();
-		if (!reader) {
-			throw new Error("No reader available");
-		}
-
-		let chunks = "";
-		while (true) {
-			const { value, done } = await reader.read();
-			if (done) break;
-			chunks += new TextDecoder().decode(value);
-		}
-
-		return chunks;
-	}
-
-	async function thenCartContainsItem(
-		ctx: TestContext,
-		sessionId: string,
-		expectedItem: { name: string; price: number; quantity: number },
-	) {
-		const cartResponse = await whenGetCart(ctx, sessionId);
-		const cartData = await thenCartResponseIsValid(cartResponse);
-
-		expect(cartData.items).toHaveLength(1);
-		expect(cartData.items[0].name).toBe(expectedItem.name);
-		expect(cartData.items[0].price).toBe(expectedItem.price);
-		expect(cartData.items[0].quantity).toBe(expectedItem.quantity);
-
-		return cartData;
-	}
 
 	it("adds items to cart", async (ctx) => {
 		const sessionId = "test-session";
