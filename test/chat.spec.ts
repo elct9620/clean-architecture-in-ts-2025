@@ -42,6 +42,22 @@ describe("POST /api/chat", () => {
 });
 
 describe("GET /api/chat/:id", () => {
+	beforeEach((ctx) => {
+		givenLanguageModel(ctx, [
+			{ type: "text-delta", textDelta: "Hello" },
+			{ type: "text-delta", textDelta: " World" },
+			{
+				type: "finish",
+				finishReason: "stop",
+				usage: { completionTokens: 0, promptTokens: 0 },
+			},
+		]);
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
 	it("returns empty conversation when not exists", async (ctx) => {
 		await whenGetChat(ctx, "non-existent-id");
 

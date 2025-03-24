@@ -105,33 +105,26 @@ export async function whenGetChat(ctx: TestContext, sessionId: string) {
 	});
 }
 
-export async function thenChatResponseIsValid(ctx: TestContext) {
+export async function thenChatContainsMessages(
+	ctx: TestContext,
+	expectedMessages: Array<{ role: string; content: string }>,
+) {
 	expect(ctx.response.status).toBe(200);
 	expect(ctx.response.headers.get("content-type")).toContain(
 		"application/json",
 	);
 
-	const data = await ctx.response.json();
+	const data = (await ctx.response.json()) as {
+		messages: Array<{ role: string; content: string }>;
+	};
 	expect(data).toHaveProperty("messages");
-	expect(Array.isArray(data.messages)).toBe(true);
 
-	return data;
-}
-
-export async function thenChatContainsMessages(
-	ctx: TestContext,
-	expectedMessages: Array<{ role: string; content: string }>,
-) {
-	const chatData = await thenChatResponseIsValid(ctx);
-
-	expect(chatData.messages).toHaveLength(expectedMessages.length);
+	expect(data.messages).toHaveLength(expectedMessages.length);
 
 	for (let i = 0; i < expectedMessages.length; i++) {
-		expect(chatData.messages[i].role).toBe(expectedMessages[i].role);
-		expect(chatData.messages[i].content).toBe(expectedMessages[i].content);
+		expect(data.messages[i].role).toBe(expectedMessages[i].role);
+		expect(data.messages[i].content).toBe(expectedMessages[i].content);
 	}
-
-	return chatData;
 }
 
 export async function thenHtmlContains(ctx: TestContext, text: string) {
