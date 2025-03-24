@@ -50,7 +50,9 @@ export async function* chatWithAssistant(
 	}
 }
 
-export async function getConversation(sessionId: string): Promise<Conversation> {
+export async function getConversation(
+	sessionId: string,
+): Promise<Conversation> {
 	const res = await chatApi[":id"].$get({
 		param: {
 			id: sessionId,
