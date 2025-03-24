@@ -20,8 +20,8 @@ export async function whenGetCart(ctx: TestContext, sessionId: string) {
 	return ctx.response;
 }
 
-export async function whenSendChatMessage(sessionId: string, content: string) {
-	return await SELF.fetch("https://example.com/api/chat", {
+export async function whenSendChatMessage(ctx: TestContext, sessionId: string, content: string) {
+	ctx.response = await SELF.fetch("https://example.com/api/chat", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -32,6 +32,8 @@ export async function whenSendChatMessage(sessionId: string, content: string) {
 			content,
 		}),
 	});
+	
+	return ctx.response;
 }
 
 export async function thenCartResponseIsValid(response: Response) {
@@ -78,12 +80,12 @@ export async function whenStreamResponseCompleted(response: Response) {
 }
 
 export async function thenStreamEventHave(
-	response: Response,
+	ctx: TestContext,
 	expectedContents: string[],
 ) {
-	expect(response.headers.get("content-type")).toBe("text/event-stream");
+	expect(ctx.response.headers.get("content-type")).toBe("text/event-stream");
 
-	const chunks = await whenStreamResponseCompleted(response);
+	const chunks = await whenStreamResponseCompleted(ctx.response);
 
 	for (const content of expectedContents) {
 		expect(chunks).toContain(content);

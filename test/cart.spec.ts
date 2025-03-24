@@ -46,11 +46,12 @@ describe("GET /api/cart", () => {
 
 	it("adds items to cart", async (ctx) => {
 		const sessionId = "test-session";
-		const response = await whenSendChatMessage(
+		await whenSendChatMessage(
+			ctx,
 			sessionId,
 			"我要買 2 個 無線滑鼠",
 		);
-		await whenStreamResponseCompleted(response);
+		await whenStreamResponseCompleted(ctx.response);
 		await thenCartContainsItem(ctx, sessionId, {
 			name: "無線滑鼠",
 			price: 699,

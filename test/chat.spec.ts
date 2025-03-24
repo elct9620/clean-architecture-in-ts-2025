@@ -21,11 +21,11 @@ describe("Chat Controller", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("responds with SSE stream", async () => {
+	it("responds with SSE stream", async (ctx) => {
 		const sessionId = "test-session";
-		const response = await whenSendChatMessage(sessionId, "Hello");
+		await whenSendChatMessage(ctx, sessionId, "Hello");
 
-		await thenStreamEventHave(response, [
+		await thenStreamEventHave(ctx, [
 			"event: message",
 			'data: {"content":"Hello"}',
 			'data: {"content":" World"}',
