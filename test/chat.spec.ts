@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 
+import { Role } from "@/entity/Conversation";
 import "../src/index";
 import { givenConversation } from "./steps/cloudflare";
 import {
@@ -11,7 +12,7 @@ import {
 } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
-describe("Chat Controller", () => {
+describe("POST /api/chat", () => {
 	beforeEach((ctx) => {
 		givenLanguageModel(ctx, [
 			{ type: "text-delta", textDelta: "Hello" },
@@ -38,47 +39,47 @@ describe("Chat Controller", () => {
 			'data: {"content":" World"}',
 		]);
 	});
+});
 
-	describe("GET /api/chat/:id", () => {
-		it("returns empty conversation when not exists", async (ctx) => {
-			await whenGetChat(ctx, "non-existent-id");
+describe("GET /api/chat/:id", () => {
+	it("returns empty conversation when not exists", async (ctx) => {
+		await whenGetChat(ctx, "non-existent-id");
 
-			await thenChatContainsMessages(ctx, []);
-		});
+		await thenChatContainsMessages(ctx, []);
+	});
 
-		it("returns conversation from KV store", async (ctx) => {
-			const sessionId = "existing-session";
-			const conversation = {
-				id: sessionId,
-				messages: [
-					{ role: "user", content: "你好" },
-					{ role: "assistant", content: "你好！有什麼我可以幫助你的嗎？" },
-				],
-			};
+	it("returns conversation from KV store", async (ctx) => {
+		const sessionId = "existing-session";
+		const conversation = {
+			id: sessionId,
+			messages: [
+				{ role: Role.User, content: "你好" },
+				{ role: Role.Assistant, content: "你好！有什麼我可以幫助你的嗎？" },
+			],
+		};
 
-			await givenConversation(ctx, conversation);
-			await whenGetChat(ctx, sessionId);
+		await givenConversation(ctx, conversation);
+		await whenGetChat(ctx, sessionId);
 
-			await thenChatContainsMessages(ctx, [
-				{ role: "user", content: "你好" },
-				{ role: "assistant", content: "你好！有什麼我可以幫助你的嗎？" },
-			]);
-		});
+		await thenChatContainsMessages(ctx, [
+			{ role: "user", content: "你好" },
+			{ role: "assistant", content: "你好！有什麼我可以幫助你的嗎？" },
+		]);
+	});
 
-		it("saves and retrieves conversation after chat", async (ctx) => {
-			const sessionId = "chat-then-get-session";
+	it("saves and retrieves conversation after chat", async (ctx) => {
+		const sessionId = "chat-then-get-session";
 
-			// 發送聊天訊息
-			await whenSendChatMessage(ctx, sessionId, "Hello");
-			await whenStreamResponseCompleted(ctx);
+		// 發送聊天訊息
+		await whenSendChatMessage(ctx, sessionId, "Hello");
+		await whenStreamResponseCompleted(ctx);
 
-			// 獲取對話
-			await whenGetChat(ctx, sessionId);
+		// 獲取對話
+		await whenGetChat(ctx, sessionId);
 
-			await thenChatContainsMessages(ctx, [
-				{ role: "user", content: "Hello" },
-				{ role: "assistant", content: "Hello World" },
-			]);
-		});
+		await thenChatContainsMessages(ctx, [
+			{ role: "user", content: "Hello" },
+			{ role: "assistant", content: "Hello World" },
+		]);
 	});
 });

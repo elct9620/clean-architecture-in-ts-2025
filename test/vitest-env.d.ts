@@ -4,4 +4,10 @@ declare module "vitest" {
 	}
 }
 
+declare module "cloudflare:test" {
+	export interface ProvidedEnv {
+		KV: KVNamespace;
+	}
+}
+
 export {};
