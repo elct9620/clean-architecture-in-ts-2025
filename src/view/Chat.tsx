@@ -71,21 +71,22 @@ export const Chat: FC = () => {
 		},
 		[sessionId, handleMessageDispatch, refreshCart],
 	);
-	
+
 	// 在頁面加載時獲取對話歷史
 	useEffect(() => {
 		async function loadConversation() {
 			try {
 				const conversation = await getConversation(sessionId);
-				
+
 				// 將歷史消息添加到狀態中
 				if (conversation.messages.length > 0) {
-					conversation.messages.forEach(msg => {
+					conversation.messages.forEach((msg) => {
 						dispatch({
-							type: msg.role === Role.User 
-								? ActionType.AddUserMessage 
-								: ActionType.AddAssistantMessage,
-							payload: msg.content
+							type:
+								msg.role === Role.User
+									? ActionType.AddUserMessage
+									: ActionType.AddAssistantMessage,
+							payload: msg.content,
 						});
 					});
 				}
@@ -95,7 +96,7 @@ export const Chat: FC = () => {
 				setIsInitializing(false);
 			}
 		}
-		
+
 		loadConversation();
 	}, [sessionId]);
 
@@ -105,7 +106,10 @@ export const Chat: FC = () => {
 				<span>Session ID: {sessionId}</span>
 			</div>
 			<div className="flex-1 overflow-y-auto p-6">
-				<ChatMessage messages={messages} loading={isLoading || isInitializing} />
+				<ChatMessage
+					messages={messages}
+					loading={isLoading || isInitializing}
+				/>
 			</div>
 			<div className="border-t border-gray-200 p-6 bg-card shadow-md">
 				<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
