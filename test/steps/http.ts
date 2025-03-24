@@ -61,7 +61,7 @@ export async function thenCartContainsItem(
 	return cartData;
 }
 
-export async function thenReadStreamResponse(response: Response) {
+export async function whenStreamResponseCompleted(response: Response) {
 	const reader = response.body?.getReader();
 	if (!reader) {
 		throw new Error("No reader available");

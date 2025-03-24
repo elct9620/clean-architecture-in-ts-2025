@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, it, vi } from "vitest";
 import {
 	thenCartContainsItem,
 	thenCartResponseIsValid,
-	thenReadStreamResponse,
 	whenGetCart,
 	whenSendChatMessage,
+	whenStreamResponseCompleted,
 } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
 
@@ -50,7 +50,7 @@ describe("Cart Controller", () => {
 			sessionId,
 			"我要買 2 個 無線滑鼠",
 		);
-		await thenReadStreamResponse(response);
+		await whenStreamResponseCompleted(response);
 		await thenCartContainsItem(ctx, sessionId, {
 			name: "無線滑鼠",
 			price: 699,
