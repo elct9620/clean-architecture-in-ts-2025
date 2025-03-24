@@ -96,6 +96,47 @@ export async function thenStreamEventHave(
 	return chunks;
 }
 
+export async function whenGetChat(ctx: TestContext, sessionId: string) {
+	ctx.response = await SELF.fetch(
+		`https://example.com/api/chat/${sessionId}`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		},
+	);
+}
+
+export async function thenChatResponseIsValid(ctx: TestContext) {
+	expect(ctx.response.status).toBe(200);
+	expect(ctx.response.headers.get("content-type")).toContain(
+		"application/json",
+	);
+
+	const data = await ctx.response.json();
+	expect(data).toHaveProperty("messages");
+	expect(Array.isArray(data.messages)).toBe(true);
+
+	return data;
+}
+
+export async function thenChatContainsMessages(
+	ctx: TestContext,
+	expectedMessages: Array<{ role: string; content: string }>,
+) {
+	const chatData = await thenChatResponseIsValid(ctx);
+	
+	expect(chatData.messages).toHaveLength(expectedMessages.length);
+	
+	for (let i = 0; i < expectedMessages.length; i++) {
+		expect(chatData.messages[i].role).toBe(expectedMessages[i].role);
+		expect(chatData.messages[i].content).toBe(expectedMessages[i].content);
+	}
+
+	return chatData;
+}
+
 export async function thenHtmlContains(ctx: TestContext, text: string) {
 	const html = await ctx.response.text();
 
