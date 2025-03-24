@@ -97,15 +97,12 @@ export async function thenStreamEventHave(
 }
 
 export async function whenGetChat(ctx: TestContext, sessionId: string) {
-	ctx.response = await SELF.fetch(
-		`https://example.com/api/chat/${sessionId}`,
-		{
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
+	ctx.response = await SELF.fetch(`https://example.com/api/chat/${sessionId}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
 		},
-	);
+	});
 }
 
 export async function thenChatResponseIsValid(ctx: TestContext) {
@@ -126,9 +123,9 @@ export async function thenChatContainsMessages(
 	expectedMessages: Array<{ role: string; content: string }>,
 ) {
 	const chatData = await thenChatResponseIsValid(ctx);
-	
+
 	expect(chatData.messages).toHaveLength(expectedMessages.length);
-	
+
 	for (let i = 0; i < expectedMessages.length; i++) {
 		expect(chatData.messages[i].role).toBe(expectedMessages[i].role);
 		expect(chatData.messages[i].content).toBe(expectedMessages[i].content);
