@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Cart } from "@api/cart";
 import { givenLanguageModel } from "./steps/llm";
+import { whenGetCart } from "./steps/http";
 
 describe("Cart Controller", () => {
 	beforeEach((ctx) => {
@@ -34,17 +35,6 @@ describe("Cart Controller", () => {
 		vi.restoreAllMocks();
 	});
 
-	async function whenGetCart(sessionId: string) {
-		return await SELF.fetch(
-			`https://example.com/api/cart?sessionId=${sessionId}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			},
-		);
-	}
 
 	async function thenCartResponseIsValid(response: Response) {
 		expect(response.status).toBe(200);
@@ -57,8 +47,8 @@ describe("Cart Controller", () => {
 		return data;
 	}
 
-	it("responds with cart data", async () => {
-		const response = await whenGetCart("mock-id");
+	it("responds with cart data", async (ctx) => {
+		const response = await whenGetCart(ctx, "mock-id");
 		await thenCartResponseIsValid(response);
 	});
 
@@ -93,10 +83,11 @@ describe("Cart Controller", () => {
 	}
 
 	async function thenCartContainsItem(
+		ctx: TestContext,
 		sessionId: string,
 		expectedItem: { name: string; price: number; quantity: number },
 	) {
-		const cartResponse = await whenGetCart(sessionId);
+		const cartResponse = await whenGetCart(ctx, sessionId);
 		const cartData = await thenCartResponseIsValid(cartResponse);
 
 		expect(cartData.items).toHaveLength(1);
@@ -107,14 +98,14 @@ describe("Cart Controller", () => {
 		return cartData;
 	}
 
-	it("adds items to cart", async () => {
+	it("adds items to cart", async (ctx) => {
 		const sessionId = "test-session";
 		const response = await whenSendChatMessage(
 			sessionId,
 			"我要買 2 個 無線滑鼠",
 		);
 		await thenReadStreamResponse(response);
-		await thenCartContainsItem(sessionId, {
+		await thenCartContainsItem(ctx, sessionId, {
 			name: "無線滑鼠",
 			price: 699,
 			quantity: 2,
