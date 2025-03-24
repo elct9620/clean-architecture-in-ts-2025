@@ -20,6 +20,15 @@ export type Event = {
 	content?: string;
 };
 
+export interface Message {
+	role: "user" | "assistant";
+	content: string;
+}
+
+export interface Conversation {
+	messages: Message[];
+}
+
 export async function* chatWithAssistant(
 	sessionId: string,
 	content: string,
@@ -39,4 +48,14 @@ export async function* chatWithAssistant(
 			...JSON.parse(event.data),
 		};
 	}
+}
+
+export async function getConversation(sessionId: string): Promise<Conversation> {
+	const res = await chatApi[":id"].$get({
+		param: {
+			id: sessionId,
+		},
+	});
+
+	return (await res.json()) as Conversation;
 }
