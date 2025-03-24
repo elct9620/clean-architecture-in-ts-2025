@@ -20,7 +20,11 @@ export async function whenGetCart(ctx: TestContext, sessionId: string) {
 	return ctx.response;
 }
 
-export async function whenSendChatMessage(ctx: TestContext, sessionId: string, content: string) {
+export async function whenSendChatMessage(
+	ctx: TestContext,
+	sessionId: string,
+	content: string,
+) {
 	ctx.response = await SELF.fetch("https://example.com/api/chat", {
 		method: "POST",
 		headers: {
@@ -32,7 +36,7 @@ export async function whenSendChatMessage(ctx: TestContext, sessionId: string, c
 			content,
 		}),
 	});
-	
+
 	return ctx.response;
 }
 
