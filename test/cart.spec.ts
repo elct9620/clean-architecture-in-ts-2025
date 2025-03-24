@@ -1,68 +1,21 @@
-import { simulateReadableStream } from "ai";
 import { SELF } from "cloudflare:test";
-import { container } from "tsyringe-neo";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { MockLanguageModelV1 } from "./mocks/MockLanguageModelV1";
-
-import { LlmModel } from "@/container";
 import { Cart } from "@api/cart";
+import { givenAddToCartLanguageModel } from "./steps/llm";
 
 describe("Cart Controller", () => {
-	beforeEach(() => {
-		let nthStep = 0;
-		const model = new MockLanguageModelV1({
-			doStream: async () => {
-				if (nthStep > 0) {
-					return {
-						rawCall: { rawPrompt: null, rawSettings: {} },
-						stream: simulateReadableStream({ chunks: [] }),
-					};
-				}
-
-				nthStep++;
-				return {
-					rawCall: { rawPrompt: null, rawSettings: {} },
-					stream: simulateReadableStream({
-						chunks: [
-							{
-								type: "tool-call",
-								toolName: "addToCart",
-								toolCallId: "1234",
-								toolCallType: "function",
-								args: '{ "name": "無線滑鼠", "quantity": 2 }',
-							},
-							{
-								type: "tool-call-delta",
-								toolName: "addToCart",
-								toolCallId: "1234",
-								toolCallType: "function",
-								argsTextDelta: "{}",
-							},
-							{ type: "text-delta", textDelta: "已將商品加入購物車" },
-							{
-								type: "finish",
-								finishReason: "stop",
-								usage: { completionTokens: 0, promptTokens: 0 },
-							},
-						],
-					}),
-				};
-			},
-		});
-
-		container.register(LlmModel, {
-			useValue: model,
-		});
+	beforeEach((ctx) => {
+		givenAddToCartLanguageModel(ctx);
 	});
 
 	afterEach(() => {
 		vi.restoreAllMocks();
 	});
 
-	it("responds with cart data", async () => {
-		const response = await SELF.fetch(
-			`https://example.com/api/cart?sessionId=mock-id`,
+	async function whenGetCart(sessionId: string) {
+		return await SELF.fetch(
+			`https://example.com/api/cart?sessionId=${sessionId}`,
 			{
 				method: "GET",
 				headers: {
@@ -70,28 +23,39 @@ describe("Cart Controller", () => {
 				},
 			},
 		);
+	}
 
+	async function thenCartResponseIsValid(response: Response) {
 		expect(response.status).toBe(200);
 		expect(response.headers.get("content-type")).toContain("application/json");
 
 		const data = (await response.json()) as Cart;
 		expect(data).toHaveProperty("items");
 		expect(Array.isArray(data.items)).toBe(true);
+		
+		return data;
+	}
+
+	it("responds with cart data", async () => {
+		const response = await whenGetCart("mock-id");
+		await thenCartResponseIsValid(response);
 	});
 
-	it("adds items to cart", async () => {
-		const response = await SELF.fetch("https://example.com/api/chat", {
+	async function whenSendChatMessage(sessionId: string, content: string) {
+		return await SELF.fetch("https://example.com/api/chat", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 				Accept: "text/event-stream",
 			},
 			body: JSON.stringify({
-				sessionId: "test-session",
-				content: "我要買 2 個 無線滑鼠",
+				sessionId,
+				content,
 			}),
 		});
+	}
 
+	async function thenReadStreamResponse(response: Response) {
 		const reader = response.body?.getReader();
 		if (!reader) {
 			throw new Error("No reader available");
@@ -103,21 +67,30 @@ describe("Cart Controller", () => {
 			if (done) break;
 			chunks += new TextDecoder().decode(value);
 		}
+		
+		return chunks;
+	}
 
-		const cartResponse = await SELF.fetch(
-			`https://example.com/api/cart?sessionId=test-session`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			},
-		);
-
-		const cartData = (await cartResponse.json()) as Cart;
+	async function thenCartContainsItem(sessionId: string, expectedItem: { name: string, price: number, quantity: number }) {
+		const cartResponse = await whenGetCart(sessionId);
+		const cartData = await thenCartResponseIsValid(cartResponse);
+		
 		expect(cartData.items).toHaveLength(1);
-		expect(cartData.items[0].name).toBe("無線滑鼠");
-		expect(cartData.items[0].price).toBe(699);
-		expect(cartData.items[0].quantity).toBe(2);
+		expect(cartData.items[0].name).toBe(expectedItem.name);
+		expect(cartData.items[0].price).toBe(expectedItem.price);
+		expect(cartData.items[0].quantity).toBe(expectedItem.quantity);
+		
+		return cartData;
+	}
+
+	it("adds items to cart", async () => {
+		const sessionId = "test-session";
+		const response = await whenSendChatMessage(sessionId, "我要買 2 個 無線滑鼠");
+		await thenReadStreamResponse(response);
+		await thenCartContainsItem(sessionId, { 
+			name: "無線滑鼠", 
+			price: 699, 
+			quantity: 2 
+		});
 	});
 });
