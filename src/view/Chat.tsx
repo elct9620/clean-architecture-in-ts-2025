@@ -1,6 +1,6 @@
-import { FC, useCallback, useReducer, useState } from "hono/jsx/dom";
+import { FC, useCallback, useEffect, useReducer, useState } from "hono/jsx/dom";
 
-import { chatWithAssistant, EventType } from "@api/chat";
+import { chatWithAssistant, EventType, getConversation } from "@api/chat";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
 import { useCart } from "./state/cart";
@@ -51,6 +51,7 @@ export const Chat: FC = () => {
 	const { refresh: refreshCart } = useCart();
 	const [messages, dispatch] = useReducer(messagesReducer, []);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isInitializing, setIsInitializing] = useState(true);
 
 	const handleMessageDispatch = useCallback(
 		(type: ActionType, payload: any) => {
@@ -70,6 +71,33 @@ export const Chat: FC = () => {
 		},
 		[sessionId, handleMessageDispatch, refreshCart],
 	);
+	
+	// 在頁面加載時獲取對話歷史
+	useEffect(() => {
+		async function loadConversation() {
+			try {
+				const conversation = await getConversation(sessionId);
+				
+				// 將歷史消息添加到狀態中
+				if (conversation.messages.length > 0) {
+					conversation.messages.forEach(msg => {
+						dispatch({
+							type: msg.role === Role.User 
+								? ActionType.AddUserMessage 
+								: ActionType.AddAssistantMessage,
+							payload: msg.content
+						});
+					});
+				}
+			} catch (error) {
+				console.error("Failed to load conversation:", error);
+			} finally {
+				setIsInitializing(false);
+			}
+		}
+		
+		loadConversation();
+	}, [sessionId]);
 
 	return (
 		<div className="flex flex-col h-screen bg-background font-font-family-sans">
@@ -77,7 +105,7 @@ export const Chat: FC = () => {
 				<span>Session ID: {sessionId}</span>
 			</div>
 			<div className="flex-1 overflow-y-auto p-6">
-				<ChatMessage messages={messages} />
+				<ChatMessage messages={messages} loading={isLoading || isInitializing} />
 			</div>
 			<div className="border-t border-gray-200 p-6 bg-card shadow-md">
 				<ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
