@@ -26,6 +26,10 @@ export interface CartPresenter {
 	setCart(cart: Cart): Promise<void>;
 }
 
+export interface ConversationPresenter {
+	addMessage(role: "user" | "assistant", content: string): Promise<void>;
+}
+
 export interface ChatAgent {
 	chat(
 		cart: Cart,
