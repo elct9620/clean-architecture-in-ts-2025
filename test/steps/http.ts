@@ -15,7 +15,7 @@ export async function whenGetCart(ctx: TestContext, sessionId: string) {
 			},
 		},
 	);
-	
+
 	return ctx.response;
 }
 
