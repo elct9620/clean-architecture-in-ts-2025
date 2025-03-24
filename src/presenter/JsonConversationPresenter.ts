@@ -1,4 +1,3 @@
-import { Role } from "@/entity/Conversation";
 import { ConversationPresenter } from "@/usecase/interface";
 
 export class JsonConversationPresenter implements ConversationPresenter {
