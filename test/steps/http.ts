@@ -16,8 +16,6 @@ export async function whenGetCart(ctx: TestContext, sessionId: string) {
 			},
 		},
 	);
-
-	return ctx.response;
 }
 
 export async function whenSendChatMessage(
@@ -36,15 +34,13 @@ export async function whenSendChatMessage(
 			content,
 		}),
 	});
-
-	return ctx.response;
 }
 
-export async function thenCartResponseIsValid(response: Response) {
-	expect(response.status).toBe(200);
-	expect(response.headers.get("content-type")).toContain("application/json");
+export async function thenCartResponseIsValid(ctx: TestContext) {
+	expect(ctx.response.status).toBe(200);
+	expect(ctx.response.headers.get("content-type")).toContain("application/json");
 
-	const data = (await response.json()) as Cart;
+	const data = (await ctx.response.json()) as Cart;
 	expect(data).toHaveProperty("items");
 	expect(Array.isArray(data.items)).toBe(true);
 
@@ -56,8 +52,8 @@ export async function thenCartContainsItem(
 	sessionId: string,
 	expectedItem: { name: string; price: number; quantity: number },
 ) {
-	const cartResponse = await whenGetCart(ctx, sessionId);
-	const cartData = await thenCartResponseIsValid(cartResponse);
+	await whenGetCart(ctx, sessionId);
+	const cartData = await thenCartResponseIsValid(ctx);
 
 	expect(cartData.items).toHaveLength(1);
 	expect(cartData.items[0].name).toBe(expectedItem.name);
@@ -67,8 +63,8 @@ export async function thenCartContainsItem(
 	return cartData;
 }
 
-export async function whenStreamResponseCompleted(response: Response) {
-	const reader = response.body?.getReader();
+export async function whenStreamResponseCompleted(ctx: TestContext) {
+	const reader = ctx.response.body?.getReader();
 	if (!reader) {
 		throw new Error("No reader available");
 	}
@@ -89,7 +85,7 @@ export async function thenStreamEventHave(
 ) {
 	expect(ctx.response.headers.get("content-type")).toBe("text/event-stream");
 
-	const chunks = await whenStreamResponseCompleted(ctx.response);
+	const chunks = await whenStreamResponseCompleted(ctx);
 
 	for (const content of expectedContents) {
 		expect(chunks).toContain(content);

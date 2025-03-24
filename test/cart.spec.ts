@@ -40,14 +40,14 @@ describe("GET /api/cart", () => {
 	});
 
 	it("responds with cart data", async (ctx) => {
-		const response = await whenGetCart(ctx, "mock-id");
-		await thenCartResponseIsValid(response);
+		await whenGetCart(ctx, "mock-id");
+		await thenCartResponseIsValid(ctx);
 	});
 
 	it("adds items to cart", async (ctx) => {
 		const sessionId = "test-session";
 		await whenSendChatMessage(ctx, sessionId, "我要買 2 個 無線滑鼠");
-		await whenStreamResponseCompleted(ctx.response);
+		await whenStreamResponseCompleted(ctx);
 		await thenCartContainsItem(ctx, sessionId, {
 			name: "無線滑鼠",
 			price: 699,
