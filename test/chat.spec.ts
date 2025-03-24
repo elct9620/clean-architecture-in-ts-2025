@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, it, vi } from "vitest";
 
 import "../src/index";
+import { givenConversation } from "./steps/cloudflare";
 import {
 	thenChatContainsMessages,
 	thenStreamEventHave,
@@ -9,7 +10,6 @@ import {
 	whenStreamResponseCompleted,
 } from "./steps/http";
 import { givenLanguageModel } from "./steps/llm";
-import { givenConversation } from "./steps/cloudflare";
 
 describe("Chat Controller", () => {
 	beforeEach((ctx) => {
