@@ -35,7 +35,7 @@
 		"@hono/zod-validator": "^0.4.3",
 		"@tailwindcss/vite": "^4.0.14",
 		"ai": "^5.0.52",
-		"hono": "^4.11.4",
+		"hono": "^4.11.7",
 		"reflect-metadata": "^0.2.2",
 		"tailwindcss": "^4.0.14",
 		"tsyringe-neo": "^5.1.0",
